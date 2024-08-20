@@ -7,20 +7,16 @@ interface Project {
 
 const projectsData: Project[] = [
   {
-    title: 'A Search Engine',
-    description: `What if you could look up any information in the world? Webpages, images, videos
-    and more. Google has many features to help you find exactly what you're looking
-    for.`,
-    imgSrc: '/static/images/google.png',
-    href: 'https://www.google.com',
+    title: 'Julia 忘備録',
+    description: 'Julia の忘備録.',
+    imgSrc: '/static/images/julia-m.png',
+    href: 'https://rice8y.github.io/Eypage/',
   },
   {
-    title: 'The Time Machine',
-    description: `Imagine being able to travel back in time or to the future. Simple turn the knob
-    to the desired date and press "Go". No more worrying about lost keys or
-    forgotten headphones with this simple yet affordable solution.`,
-    imgSrc: '/static/images/time-machine.jpg',
-    href: '/blog/the-time-machine',
+    title: 'SQLite3 for PHP',
+    description: 'PHP による SQLite3 に関する忘備録',
+    imgSrc: '/static/images/sqlite-m',
+    href: 'https://rice8y.github.io/sqlite3/',
   },
 ]
 
