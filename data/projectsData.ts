@@ -21,7 +21,7 @@ const projectsData: Project[] = [
   {
     title: 'ごみカレンダー bot',
     description: '道後・湯築地区のごみカレンダー bot.',
-    imgSrc: '/static/images/trash.png',
+    imgSrc: '/static/images/trash.jpg',
     href: 'https://l.instagram.com/?u=https%3A%2F%2Fliff.line.me%2F1645278921-kWRPP32q%2F%3FaccountId%3D756viccf&e=AT2ZQcKBYVa1OchuUomVezPyvR1otSp2w85DUGAz4QTiv6NdQgKsMOVIXfC00jiHeBgjIrTHnCMTEEoHRiaxFxctMcmFpsnFHfUPO-A',
   },
 ]
