@@ -15,7 +15,7 @@ const projectsData: Project[] = [
   {
     title: 'SQLite3 for PHP',
     description: 'PHP による SQLite3 に関する忘備録',
-    imgSrc: '/static/images/sqlite-m',
+    imgSrc: '/static/images/sqlite-m.png',
     href: 'https://rice8y.github.io/sqlite3/',
   },
 ]
