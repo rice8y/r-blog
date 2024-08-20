@@ -1,0 +1,90 @@
+---
+title: 雪だるま☃してみる
+date: '2024-07-20'
+tags: ['latex']
+summary: LaTeX で雪だるましてみた話.
+---
+
+## 雪だるまの歴史
+
+雪だるま☃する前に, まず, Unicodeの雪だるまの歴史を遡る必要がある. Unicode 5.1 以前は, 雪だるまは <a href="https://util.unicode.org/UnicodeJsps/character.jsp?a=2603">U+2603 SNOWMAN</a> のみであったが, 
+Unicode 5.2 で <a href="http://unicode.org/cldr/utility/character.jsp?a=26C4">U+26C4 SNOWMAN WITHOUT SNOW</a> と <a href="http://unicode.org/cldr/utility/character.jsp?a=26C7">U+26C7 BLACK SNOWMAN</a> が追加された. 
+Unicode 5.1 以前の例示字形では U+2603 において背景に雪が降っていたが, 前述により Unicode 5.2 以降の例示字形では, U+2603 は雪だるま(白)+降雪, U+26C4 は雪だるま(白)のみ, U+26C7 は黒い雪だるま+降雪, というデザインとなった (雪だるま3兄弟の誕生!). 
+なお, 雪だるまグリフのデザインはフォントによって多種多様であり, U+2603 でも雪が降ったり降らなかったり, 表情が異なったりする. 様々なフォントにおける雪だるまグリフのデザインについては, <a href="https://doratex.hatenablog.jp/entry/20140327/1395878814">TeX Alchemist Online の記事</a>が参考になる.
+
+さて, ここまでの説明で分かるように, 使用するフォントによって雪だるまが異なってしまうという<span style="color: red;">大問題</span>が発生する. これは, LaTeXにおいても同様であり, この問題に対して様々な議論がなされた<sup><a href="#f1">1</a></sup>. 
+そこで作られたのが, <a href="https://github.com/aminophen/scsnowman">scsnowman</a> パッケージである. パッケージの使い方は, 作者である <a href="https://acetaminophen.hatenablog.com/entry/2015/12/13/080226">aminophen さんの記事</a>, <a href="https://github.com/aminophen/scsnowman/blob/master/scsnowman.pdf">公式ドキュメント</a> 辺りを参照されたい.
+
+## Hello, ☃!
+
+まず, Hello, World! ならぬ Hello, ☃! をする. scsnowman パッケージで雪だるまを表示するには, 以下のように記述する.
+
+```latex
+\documentclass{standalone}
+\usepackage{scsnowman}
+\begin{document}
+Hello, \scsnowman[hat,muffler=red,arms]!
+\end{document}
+```
+
+上記により, 以下のような出力を得る.
+
+![hello](/static/images/latex/hello.png)
+
+無事に Hello, ☃! 出来た!!
+
+## どうせなら Lua で日付表示
+
+先ほどの雪だるまだけでは味気ない<sup><a href="#f2">2</a></sup>ので日付も表示してみる. 以下のように記述する.
+
+```latex
+\documentclass{ltjsarticle}
+\usepackage{luacode}
+\usepackage{scsnowman}
+\usepackage{float}
+\usepackage{tikz}
+\begin{luacode*}
+function today(mode)
+  if mode == "date" then
+    tex.sprint("Today is " .. os.date(("%Y-%m-%d")) .. ".")
+  elseif mode == "time" then
+    tex.sprint("The current time is " .. os.date(("%H:%M:%S")) .. ".")
+  end
+end
+\end{luacode*}
+\newcommand{\myToday}[1]{\directlua{today("#1")}}
+\newcommand{\popup}[1]{%
+\newlength{\len}%
+\settowidth{\len}{#1}%
+\pgfmathsetmacro{\buff}{\len / 72.27 * 2.54}%
+\setlength{\len}{\buff cm}%
+\pgfmathsetmacro{\scale}{\len / 3.02cm}%
+\begin{tikzpicture}
+    \fill[black] (0,0) ellipse [x radius=\scale*2.01cm, y radius=\scale*1.01cm];
+    \fill[black] (-\scale*0.51,-\scale*0.91) -- (0,-\scale*2.02) -- (\scale*0.51,-\scale*0.91) -- cycle;
+    \fill[white] (0,0) ellipse [x radius=\scale*2cm, y radius=\scale*1cm];
+    \fill[white] (-\scale*0.5,-\scale*0.9) -- (0,-\scale*2) -- (\scale*0.5,-\scale*0.9) -- cycle;
+    \node[align=center] at (0,0) {#1};
+\end{tikzpicture}%
+}
+        
+\begin{document}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c}
+    \popup{\myToday{date}}\\
+    \scsnowman[hat,muffler=red,arms,scale=10]
+\end{tabular}
+\end{table}
+\end{document}                  
+```
+
+上記により, 以下のような出力を得る.
+
+![date](/static/images/latex/date.png)
+
+吹き出しが不格好なのはご愛敬.
+
+---
+<p id="f1"><strong>1.</strong> 諸説あり.</p>
+<p id="f2"><strong>2.</strong> でも素敵.</p>
