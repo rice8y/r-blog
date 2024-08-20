@@ -12,7 +12,7 @@ summary: LaTeX でシーケンスアラインメントを組版してみた話.
 ## TeXshade
 
 さて, 前述した BioTeX において開発された LaTeX でシーケンスアラインメントを組版するためのパッケージとして, <a href="https://github.com/evolvedmicrobe/texshade?tab=readme-ov-file">TeXshade</a> パッケージが存在する. 
-使用例を以下に示す<sup><a href="#f1">1</a></sup>. 
+使用例を以下に示す[^1]. 
 
 ```latex
 \documentclass{ltjsarticle}
@@ -100,4 +100,4 @@ TeX capacity exceeded, sorry [input stack size=50000].
 `stack_size` を50000より大きくしたり, `main_memory` を変更したりしたがエラーは解消されなかった. 謎🙃
 
 ---
-<p id="f1"><strong>1.</strong> DVI ファイルを経由する LaTeX エンジンを使用している場合は, TeXshade パッケージを読み込む際に, ドライバオプションで DVI ドライバを指定する必要がある.</p>
+[^1]: DVI ファイルを経由する LaTeX エンジンを使用している場合は, TeXshade パッケージを読み込む際に, ドライバオプションで DVI ドライバを指定する必要がある.</p>

@@ -7,7 +7,7 @@ summary: Lilypond で楽譜を組版してみた話.
 
 ## LilyPond とは 
 
-LilyPond とは, GPL ライセンスのもとにフリーで公開されているクロスプラットフォームの楽譜作成ソフトウェア<sup><a href="#f1">1</a></sup>である. 
+LilyPond とは, GPL ライセンスのもとにフリーで公開されているクロスプラットフォームの楽譜作成ソフトウェア[^1]である. 
 LilyPond は C++ で記述され, Scheme ライブラリでアセンブルされているが, ユーザ独自のカスタマイズや拡張も可能である.
 
 ## 導入
@@ -42,9 +42,9 @@ LilyPond が正常に動作しない場合は, ローカル環境にパスを通
 
 実際に, LilyPond で楽譜を組版してみる. 今回は Hanon No.1 を組版する.
 
-まず, 以下のように記述する (ファイル名は `hanon01.ly` とする). 
+まず, 以下のように記述する. 
 
-```ly
+```ly:hanon01.ly
 \version "2.24.3"
 \language "english"
 
@@ -288,4 +288,4 @@ lilypond hanon01.ly
 上手く組版出来た!!
 
 ---
-<p id="f1"><strong>1.</strong> 主流は MuseScore, Finale, Sibelius, Notion, Dorico, etc...</p>
+[^1]: 主流は MuseScore, Finale, Sibelius, Notion, Dorico, etc...</p>
