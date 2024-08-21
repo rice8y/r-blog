@@ -189,9 +189,24 @@ ylabel!("Membrane Potential [mV]")
 
 上記の実行により, 以下が得られる.
 
-![hh](/static/images/julia/hh.png)
+![hh](/static/images/julia/hh01.png)
 <center>
-<b>**図1:</b> $1000\, \mathrm{ms}$ 間の計算結果
+<b>図1:</b> $1000\, \mathrm{ms}$ 間の計算結果
+</center>
+
+図1では, スパイク発射の様子が分かりにくいため, $T=100$ としてシミュレーションする. 
+
+```julia
+hh!(:t, :v, 100)
+xlabel!("Time [ms]")
+ylabel!("Membrane Potential [mV]")
+```
+
+上記の実行により, 以下が得られる.
+
+![hh](/static/images/julia/hh02.png)
+<center>
+<b>図2:</b> $100\, \mathrm{ms}$ 間の計算結果
 </center>
 
 [^1]: 山﨑匡, 五十嵐潤, "はじめての神経回路シミュレーション: 1ニューロンからヒト全脳モデルまで", 講談社, 2021, ISBN: 978-4-627-85631-8.
