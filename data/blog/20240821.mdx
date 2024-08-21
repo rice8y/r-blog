@@ -1,0 +1,169 @@
+---
+title: Julia で Hodgkin-Huxley モデルのシミュレーション
+date: '2024-08-21'
+tags: ['Julia']
+summary: 「はじめての神経回路シミュレーション」を Julia で実装した話.
+---
+
+> [!NOTE]
+> 本記事で使用しているコードは, 「はじめての神経回路シミュレーション」におけるコードを Julia で書き換えたものです.
+
+## Hodgkin-Huxley モデル
+
+Hodgkin-Huxley モデルとは, A. L. Hodgkin, A. F. Huxley によって定式化された[^1]世界初の単一ニューロンの数理モデルであり, あらゆるニューロンモデルの基礎となっている. 
+
+HH モデルは次式で表される：
+
+$$C\dfrac{dV}{dt}=-\bar{g}_{\text{leak}}(V(t)-E_{\text{leak}})-g_{\text{Na}}(V,t)(V(t)-E_{\text{Na}})-g_{\text{K}}(V,t)(V(t)-E_{\text{K}})+I_{\text{ext}}(t)$$
+
+ここで, $C$ は膜のキャパシタンス [$\mathrm{\mu F/cm^{2}}$], $t$ は時間 [$\mathrm{ms}$], $V(t)$ は膜電位 [$\mathrm{mV}$], $\bar{g}_{\text{leak}}$ は定数でリークコンダクタンス [$\mathrm{mS/cm^{2}}$], $E_{\text{leak}}$ は主に $\mathrm{Cl^{-}}$ イオンの反転電位 [$\mathrm{mV}$], $g_{\text{Na}}(V,t)$ は電位依存の $\mathrm{Na^{+}}$ チャネルコンダクタンス [$\mathrm{mS/cm^{2}}$], $E_{\text{Na}}$ は $\mathrm{Na^{+}}$ イオンの反転電位 [$\mathrm{mV}$], $g_{\text{K}}(V,t)$ は電位依存の $\mathrm{K^{+}}$ チャネルコンダクタンス [$\mathrm{mS/cm^{2}}$], $E_{\text{K}}$ は $\mathrm{K^{+}}$ イオンの反転電位 [$\mathrm{mV}$], $I_{\text{ext}}(t)$ は細胞の外部から注入する電流 [$\mathrm{\mu A/cm^{2}}$] である. キャパシタの総容量やコンダクタンス値を決定するチャネルの個数は膜の面積に比例するため, これらの値は単位面積あたりに正規化されている.
+
+$g_{\text{Na}}(V,t)$, $g_{\text{K}}(V,t)$ は, それぞれ次式で表される：
+
+$$
+\begin{align*}
+&g_{\text{Na}}(V,t)=\bar{g}_{\text{Na}}m^{3}(V,t)h(V,t)\\
+&g_{\text{K}}(V,t)=\bar{g}_{\text{K}}n^{4}(V,t)
+\end{align*}
+$$
+
+ここで, $\bar{g}_{\text{Na}}$, $\bar{g}_{\text{K}}$ はそれぞれ定数で最大コンダクタンス [$\mathrm{mS/cm^{2}}$], $m(V,t)$, $h(V,t)$, $n(V,t)$ は膜電位 $V$ に依存するゲート変数である. ゲート変数はイオンチャネルの開口率を表し, 次式で更新される：
+
+$$
+\begin{align*}
+&\dfrac{dm}{dt}=\alpha_{m}(V)(1-m(V,t))-\beta_{m}(V)m(V,t)\\
+&\dfrac{dh}{dt}=\alpha_{h}(V)(1-h(V,t))-\beta_{h}(V)h(V,t)\\
+&\dfrac{dn}{dt}=\alpha_{n}(V)(1-n(V,t))-\beta_{n}(V)n(V,t)
+\end{align*}
+$$
+
+$\alpha_{x}(V)$, $\beta_{x}(V)$ は, それぞれ次式で定義される：
+
+$$
+\begin{align*}
+&\alpha_{m}(V)=\dfrac{2.5-0.1V}{\exp(2.5-0.1V)-1}\\
+&\beta_{m}(V)=4\exp\left(-\dfrac{V}{18}\right)\\
+&\alpha_{h}(V)=0.07\exp\left(-\dfrac{V}{20}\right)\\
+&\beta_{h}(V)=\dfrac{1}{\exp(3-0.1V)+1}\\
+&\alpha_{n}(V)=\dfrac{0.1-0.01V}{\exp(1-0.1V)-1}\\
+&\beta_{n}(V)=0.125\exp\left(-\dfrac{V}{80}\right)
+\end{align*}
+$$
+
+定数は, $C=1\, \mathrm{\mu F/cm^{2}}$ と正規化したとき, $\bar{g}_{\text{leak}}=0.3\, \mathrm{mS/cm^{2}}$, $E_{\text{leak}}=10.6\, \mathrm{mV}$, $g_{\text{Na}}=120\, \mathrm{mS/cm^{2}}$, $E_{\text{Na}}=115\, \mathrm{mV}$, $g_{\text{K}}=36\, \mathrm{mS/cm^{2}}$, $E_{\text{K}}=-12\, \mathrm{mV}$ である.
+
+以上より, HH モデルは4変数 ($V,n,m,h$) からなる微分方程式であり, これを数値的に解くことで, ニューロンの挙動, 特にスパイク発射の挙動を再現することが出来る.
+
+## HH モデルのシミュレーション
+
+HH モデルの1ニューロンのシミュレーションを Julia で実装する.
+
+```julia
+using Plots
+using LaTeXStrings
+
+plot_font = "Computer Modern"
+default(fontfamily=plot_font, linewidth=1, label=nothing, grid=true)
+
+const E_REST = -65.0           # mV
+const C = 1.0                  # micro F / cm^2
+const G_LEAK = 0.3             # mS / cm^2
+const E_LEAK = 10.6 + E_REST   # mV
+const G_NA = 120.0             # mS / cm^2
+const E_NA = 115.0 + E_REST    # mV
+const G_K = 36.0               # mS / cm^2
+const E_K = -12.0 + E_REST     # mV
+
+const DT = 0.01   # 10 micro s
+const T = 1000    # 1000 ms; unused
+const NT = 100000 # T / DT
+
+alpha_m(v) = (2.5 - 0.1 * (v - E_REST)) / (exp(2.5 - 0.1 * (v - E_REST)) - 1.0)
+beta_m(v) = 4.0 * exp(-(v - E_REST) / 18.0)
+alpha_h(v) = 0.07 * exp(-(v - E_REST) / 20.0)
+beta_h(v) = 1.0 / (exp(3.0 - 0.1 * (v - E_REST)) + 1.0)
+alpha_n(v) = (0.1 - 0.01 * (v - E_REST)) / (exp(1 - 0.1 * (v - E_REST)) - 1.0)
+beta_n(v) = 0.125 * exp(-(v - E_REST) / 80.0)
+
+m0(v) = alpha_m(v) / (alpha_m(v) + beta_m(v))
+h0(v) = alpha_h(v) / (alpha_h(v) + beta_h(v))
+n0(v) = alpha_n(v) / (alpha_n(v) + beta_n(v))
+
+tau_m(v) = 1.0 / (alpha_m(v) + beta_m(v))
+tau_h(v) = 1.0 / (alpha_h(v) + beta_h(v))
+tau_n(v) = 1.0 / (alpha_n(v) + beta_n(v))
+
+dmdt(v, m) = (1.0 / tau_m(v)) * (-m + m0(v))
+dhdt(v, h) = (1.0 / tau_h(v)) * (-h + h0(v))
+dndt(v, n) = (1.0 / tau_n(v)) * (-n + n0(v))
+dvdt(v, m, h, n, i_ext) = (-G_LEAK * (v - E_LEAK) - G_NA * m^3 * h * (v - E_NA) - G_K * n^4 * (v - E_K) + i_ext) / C
+
+global t_val = Float64[]
+global v_val = Float64[]
+global m_val = Float64[]
+global h_val = Float64[]
+global n_val = Float64[]
+
+function hh!(x, y)
+    global t_val = Float64[]
+    global v_val = Float64[]
+    global m_val = Float64[]
+    global h_val = Float64[]
+    global n_val = Float64[]
+    v = E_REST
+    m = m0(v)
+    h = h0(v)
+    n = n0(v)
+
+    i_ext = 9.0 # micro A / cm^2
+
+    for nt in 1:NT
+        t = DT * nt
+        push!(t_val, t)
+        push!(v_val, v)
+        push!(m_val, m)
+        push!(h_val, h)
+        push!(n_val, n)
+
+        dmdt1 = dmdt(v, m)
+        dhdt1 = dhdt(v, h)
+        dndt1 = dndt(v, n)
+        dvdt1 = dvdt(v, m, h, n, i_ext)
+
+        dmdt2 = dmdt(v + 0.5 * DT * dvdt1, m + 0.5 * DT * dmdt1)
+        dhdt2 = dhdt(v + 0.5 * DT * dvdt1, h + 0.5 * DT * dhdt1)
+        dndt2 = dndt(v + 0.5 * DT * dvdt1, n + 0.5 * DT * dndt1)
+        dvdt2 = dvdt(v + 0.5 * DT * dvdt1, m + 0.5 * DT * dmdt1, h + 0.5 * DT * dhdt1, n + 0.5 * DT * dndt1, i_ext)
+
+        dmdt3 = dmdt(v + 0.5 * DT * dvdt2, m + 0.5 * DT * dmdt2)
+        dhdt3 = dhdt(v + 0.5 * DT * dvdt2, h + 0.5 * DT * dhdt2)
+        dndt3 = dndt(v + 0.5 * DT * dvdt2, n + 0.5 * DT * dndt2)
+        dvdt3 = dvdt(v + 0.5 * DT * dvdt2, m + 0.5 * DT * dmdt2, h + 0.5 * DT * dhdt2, n + 0.5 * DT * dndt2, i_ext)
+
+        dmdt4 = dmdt(v + DT * dvdt3, m + DT * dmdt3)
+        dhdt4 = dhdt(v + DT * dvdt3, h + DT * dhdt3)
+        dndt4 = dndt(v + DT * dvdt3, n + DT * dndt3)
+        dvdt4 = dvdt(v + DT * dvdt3, m + DT * dmdt3, h + DT * dhdt3, n + DT * dndt3, i_ext)
+
+        m += DT * (dmdt1 + 2 * dmdt2 + 2 * dmdt3 + dmdt4) / 6.0
+        h += DT * (dhdt1 + 2 * dhdt2 + 2 * dhdt3 + dhdt4) / 6.0
+        n += DT * (dndt1 + 2 * dndt2 + 2 * dndt3 + dndt4) / 6.0
+        v += DT * (dvdt1 + 2 * dvdt2 + 2 * dvdt3 + dvdt4) / 6.0
+    end
+    plot(getfield(Main, Symbol(string(x) * "_val")), getfield(Main, Symbol(string(y) * "_val")), dpi=300)
+end
+```
+
+実際に, シミュレーションを可視化してみる.
+
+```julia
+hh!(:t, :v)
+```
+
+上記の実行により, 以下が得られる.
+
+![hh](/static/images/julia/hh.png)
+
+
+
+[^1]: A. L. Hodgkin, A. F. Huxley, "A quantitative description of membrane current and its application to conduction and excitation in nerve," *The Journal of Physiology*, First published: 28 August 1952, https://doi.org/10.1113/jphysiol.1952.sp004764.
