@@ -189,7 +189,7 @@ ylabel!("Membrane Potential [mV]")
 
 上記の実行により, 以下が得られる.
 
-![hh](/static/images/julia/hh01.png)
+![hh01](/static/images/julia/hh01.png)
 <center>
 <b>図1:</b> $1000\, \mathrm{ms}$ 間の計算結果
 </center>
@@ -204,9 +204,32 @@ ylabel!("Membrane Potential [mV]")
 
 上記の実行により, 以下が得られる.
 
-![hh](/static/images/julia/hh02.png)
+![hh02](/static/images/julia/hh02.png)
 <center>
 <b>図2:</b> $100\, \mathrm{ms}$ 間の計算結果
+</center>
+
+スパイク発射のメカニズムを理解するために, 各変数の振る舞いを並列表示する.
+
+```julia
+p1=hh!(:t, :v, 15)
+ylabel!(L"V\quad [\mathrm{mV}]")
+p2=hh!(:t, :m, 15)
+ylabel!(L"m")
+p3=hh!(:t, :h, 15)
+ylabel!(L"h")
+p4=hh!(:t, :n, 15)
+ylabel!(L"n")
+xlabel!(L"t\quad [\mathrm{ms}]")
+
+plot(p1, p2, p3, p4, layout=(4, 1))
+```
+
+実行により, 以下が得られる.
+
+![hh03](/static/images/julia/hh03.png)
+<center>
+<b>図3:</b> スパイク発射のメカニズム
 </center>
 
 [^1]: 山﨑匡, 五十嵐潤, "はじめての神経回路シミュレーション: 1ニューロンからヒト全脳モデルまで", 講談社, 2021, ISBN: 978-4-627-85631-8.
