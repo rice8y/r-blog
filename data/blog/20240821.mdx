@@ -212,27 +212,37 @@ ylabel!("Membrane Potential [mV]")
 スパイク発射のメカニズムを理解するために, 各変数の振る舞いを並列表示する.
 
 ```julia
-p1=hh!(:t, :v, 15)
+p1 = hh!(:t, :v, 15)
 ylabel!(L"V\quad [\mathrm{mV}]")
-p2=hh!(:t, :m, 15)
+p2 = hh!(:t, :m, 15)
 ylabel!(L"m")
-p3=hh!(:t, :h, 15)
+p3 = hh!(:t, :h, 15)
 ylabel!(L"h")
-p4=hh!(:t, :n, 15)
+p4 = hh!(:t, :n, 15)
 ylabel!(L"n")
 xlabel!(L"t\quad [\mathrm{ms}]")
 
 plot(p1, p2, p3, p4, layout=(4, 1))
 ```
 
-実行により, 以下が得られる.
+上記の実行により, 以下が得られる.
 
 ![hh03](/static/images/julia/hh03.png)
 <center>
 <b>図3:</b> スパイク発射のメカニズム
 </center>
 
-定常状態において, ごく短い時間, $1\, \mathrm{ms}$ だけ電流を加えると, $1$発だけスパイクが発射される (図3). 
+定常状態において, ごく短い時間, $1\, \mathrm{ms}$ だけ電流を加えると, $1$ 発だけスパイクが発射される (図3). 
+電流を加えることによって膜電位が脱分極すると, それに伴って $\mathrm{Na^{+}}$ チャネルのゲート変数 $m$ の値が大きくなる. 
+すると $\mathrm{Na^{+}}$ イオンの電流が発生し, 膜電位はさらに脱分極することになる. このポジティブフィードバックにより, 膜電位が急に $100\, \mathrm{mV}$ 程度上昇する. 
+
+膜電位の値が十分大きくなると, 今度はゲート変数 $h$ の値が $0$ になるため, 発生した $\mathrm{Na^{+}}$ イオンの電流は停止し, 膜電位は下降する. 
+これにより膜電位が急速上昇・下降し, スパイクが発射される. それと並行して, $h$ の変化と同程度の時間スケールで $\mathrm{K^{+}}$ イオンの電流が発生し, 膜電位を静止電位よりも過分極させる. 
+この期間は不応期とよばれ, $\mathrm{Na^{+}}$ チャネルが不活性状態にあるため, 次のスパイクを発射できない. 最終的に $m$, $h$, $n$ の値は定常状態に戻り, 次にスパイクを発射する準備が整う. 
+
+このように, スパイクは $\mathrm{Na^{+}}$ チャネルと $\mathrm{K^{+}}$ チャネルのコンダクタンスの非常に素早いダイナミクスによって生成される. 
+また, それ以外の膜電位のダイナミクスは, 時定数 $\tau=RC=C/\bar{g}_{\text{leak}}$ に従う相対的に遅いダイナミクスである. 
+ここで, $R$ は膜抵抗であり, $\bar{g}_{\text{leak}}$ の逆数である.
 
 [^1]: 山﨑匡, 五十嵐潤, "はじめての神経回路シミュレーション: 1ニューロンからヒト全脳モデルまで", 講談社, 2021, ISBN: 978-4-627-85631-8.
 [^2]: A. L. Hodgkin, A. F. Huxley, "A quantitative description of membrane current and its application to conduction and excitation in nerve," *The Journal of Physiology*, First published: 28 August 1952, [https://doi.org/10.1113/jphysiol.1952.sp004764](https://doi.org/10.1113/jphysiol.1952.sp004764).
