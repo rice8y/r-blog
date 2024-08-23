@@ -48,14 +48,93 @@ IV 層のニューロンは右目・左目のどちらか一方の入力に対�
 ### モデル
 
 左目・右目の網膜内の光に応答する細胞である視細胞に対応するスパイキングニューロンを1つずつ用意し, それぞれは独立にスパイクを発射するものとする. 
+なお, 本シミュレーションでは $100\, \mathrm{spikes/s}$ のポアソンスパイクとし, $\Delta t\, (=1\, \mathrm{ms})$ 毎に乱数を振ってスパイクを生成し, 以下の変数に格納する：
+
+$$
+\mathrm{s\_eye}[X]=\left\{
+\begin{array}{ll}
+1 & \text{if a spike was fired at that time} \\
+0 & \text{otherwise}
+\end{array}\right.
+$$
+
+ここで, $X$ は左目 $(L)$ もしくは右目 $(R)$ の視細胞のいずれかである. 
 
 ![eye](/static/images/julia/eye.png)
 <center>
 <b>図3:</b> 眼優位性マップ形成モデル[^4]
 </center>
 
-> [!NOTE]
-> 本節は執筆中 (2024/08/23 16:13).
+視覚野は2次元平面を考え, 本シミュレーションでは $32\times 32$ 個のニューロンを設定する. 
+視覚野のニューロン $i$ への入力は, 視細胞からのスパイク入力 $\mathrm{aff}(i)$ と, 皮質内のニューロン $i,j$ 間の水平結合を介した他のニューロンからのスパイク入力 $\mathrm{lat}(i)$ からなる. 
+$\mathrm{aff}(i)$ は視細胞 $\mathrm{L,\, R}$ のスパイクと, 結合強度 $w_{i,\mathrm{L}},\, w_{i,\mathrm{R}}$ の積和であり, 次式で表される：
+
+$$
+\begin{equation*}
+\mathrm{aff}(i)=w_{i,\mathrm{L}}\cdot \mathrm{s\_eye[L]}+w_{i,\mathrm{R}}\cdot\mathrm{s\_eye[R]}
+\end{equation*}
+$$
+
+$\mathrm{lat}(i)$ は, 視覚野のニューロン $j$ のスパイクを変数 $\mathrm{s\_ctx}[j]$ でニューロン $i,j$ 間の水平結合の関数を $I(i,j)$ でそれぞれ定義し, 次式で計算する：
+
+$$
+\begin{equation*}
+\mathrm{lat}(i)=\displaystyle\sum_{j}I(i,j)\cdot\mathrm{s\_ctx}[j]
+\end{equation*}
+$$
+
+また, $I(i,j)$ は次式で表される：
+
+$$
+\begin{equation*}
+I(i,j)=k_{1}\exp \left(\dfrac{-|i-j|^{2}}{2\sigma^{2}_{1}}\right)-k_{2}\exp\left(\dfrac{-|i-j|^{2}}{2\sigma^{2}_{2}}\right)
+\end{equation*}
+$$
+
+ここで, $|i-j|$ は, 皮質の2次元平面上でのニューロン $i,j$ の距離とする. 
+
+この2つの値 $(\mathrm{aff}(i),\, \mathrm{lat}(i))$ から電流 $g_{\mathrm{aff}}$, $g_{\mathrm{lat}}$ を計算し, 膜電位の更新, スパイクの発射を行う. シナプス結合の強度の初期値は, 左右から等しく結合しているとして, $0.5\pm 0.1$ の範囲でランダムに決める. ニューロンはカレントベースの LIF モデル, シナプスは指数減数モデルをそれぞれ採用する. 
+
+### シナプス可塑性
+
+ここでは, STDP を実装する. まず, $i,j$ をそれぞれポスト側, プレ側のニューロンの添え字とする. プレ側のトレース $x_{j}$ を以下のように定義する：
+
+$$
+\begin{equation*}
+x_{j}(t)=\exp\left(-\dfrac{\Delta t}{\tau_{\mathrm{pre}}}\right)x_{j}(t-\Delta t)+S_{j}(t)
+\end{equation*}
+$$
+
+ここで, $\tau_{\mathrm{pre}}$ は減衰の時定数である. また, $S_{j}(t)$ は以下の式で定義される：
+
+$$
+S_{j}(t)=\left\{
+\begin{array}{ll}
+1 & \text{if a spike was fired at time }\, t  \\
+0 & \text{otherwise}
+\end{array}\right.
+$$
+
+ポスト側のトレース $y_{i}$ は以下のように定義する：
+
+$$
+\begin{equation*}
+y_{i}(t)=\exp\left(-\dfrac{\Delta t}{\tau_{\mathrm{post}}}\right)y_{i}(t-\Delta t)+S_{i}(t)
+\end{equation*}
+$$
+
+ここで, $\tau_{\mathrm{post}}$ は減衰の時定数である. 
+
+これらの値を用いて, 結合強度を次式で更新する：
+
+$$
+\begin{align*}
+&w_{i,j}(t+\Delta t)=w_{i,j}(t)+\Delta w_{i,j}(t),\\
+&\Delta w_{i,j}(t)=-A_{-}y_{i}(t)S_{j}(t)+A_{+}x_{j}(t)S_{i}(t)
+\end{align*}
+$$
+
+ここで, $A_{-},A_{+}$ は定数である. 
 
 ### シミュレーション
 
@@ -273,7 +352,7 @@ end every 50
 上記により, 以下が得られる. 
 
 > [!NOTE]
-> ファイル読み込みに少し時間がかかります.
+> ファイル読み込みに少し時間がかかります. また, 可視化の都合上, 補完しています.
 
 ![edm](/static/images/julia/edm.gif)
 <center>
