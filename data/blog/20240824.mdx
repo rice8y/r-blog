@@ -17,8 +17,74 @@ LaTeX とは, 主に科学技術文書や学術文書を作成するための高
 LaTeX に入門する際に, 自身の環境に LaTeX 環境を構築することは面倒であるため, LaTeX のオンラインエディタを利用する方が多いだろう. 
 しかし, 「取り敢えず LaTeX を試してみたい」, 「オンラインエディタにアカウント登録しても今後使うかわからない」という方も少なからず存在するだろう[^1]. 
 
-そのような方に向けて, [Learn LaTeX](https://www.learnlatex.org/en/) を紹介する.
+そのような方に向けて, [Learn LaTeX](https://www.learnlatex.org/en/) を紹介する. 
 
-https://www.learnlatex.org/en/
+Learn LaTeX とは, LaTeX の基礎を学ぶためのレッスンを提供するウェブサイトである. 
+Learn LaTeX は, 英語, ドイツ語, スペイン語, フランス語, イタリア語, リトアニア語, カタルーニャ語, マラーティー語, ポルトガル語, ベトナム語の 10 か国語に対応している. 
+
+以下に, Learn LaTeX の特徴を紹介する.
+
+### Point 1：16 個のレッスン
+
+Learn LaTeX には 16 個のレッスンが用意されており, 各レッスンでは以下のことが学べる. 
+
+|Lesson|概要|
+|----|----|
+|1|LaTeX の基本について. 他のワープロとの比較. |
+|2|TeX システム, LaTeX のエディタについて. |
+|3|基本的な文構造, LaTeX から PDF への変換, LaTeX における特殊文字について. |
+|4|基本コマンドについて (段落分け, 箇条書き). |
+|5|文書クラスについて. |
+|6|パッケージについて. |
+|7|図の挿入について. |
+|8|表について. |
+|9|参照について. |
+|10|数式について. |
+|11|フォーマット指定について (フォント, 行間等). |
+|12|文献リストについて. |
+|13|ファイル分割について. |
+|14|フォントについて. |
+|15|エラーについて. |
+|16|LaTeX 関連の情報源について. |
+
+### Point 2：Web 上でコンパイル可能
+
+Learn LaTeX 上のエディタ (図1) でレッスン内のコードや試してみたいコマンドを編集でき, Overleaf で開いたり, Learn LaTeX 上でコンパイルし PDF を表示させることが可能. 
+
+![ll01](/static/images/latex/ll01.png)
+<center>
+<b>図1:</b> Learn LaTeX 上のエディタ
+</center>
+
+実際に, Learn LaTeX 上でコンパイル (Run at TeXLive.net) すると図2のようになる. 
+
+![ll01](/static/images/latex/ll02.png)
+<center>
+<b>図2:</b> Learn LaTeX 上でのコンパイル例
+</center>
+
+なお, Learn LaTeX 上のエディタではデフォルトコード (レッスンに沿ったコード) だけでなく, 自由に修正し, コンパイルできる. 
+また, コンパイルは [TeXLive.net](https://davidcarlisle.github.io/latexcgi/) のサーバで行っている. 
+
+### Point 3：各種設定
+
+Learn LaTeX では, 出力ファイル形式や TeX エンジン, エディタの配色を変更できる. 詳細は以下の通り. 
+
+#### 出力ファイル形式
+
+PDF (PDF.js, PDF), HTML (make4ht, LaTeXML, lwarp), log
+
+#### TeX エンジン
+
+LaTeX (pdfLaTeX, LaTeX, LuaLaTeX, XeLaTeX, pLaTeX, upLaTeX, *-dev), Plain TeX (pdftex, tex, luatex, xetex, ptex, uptex)
+
+#### エディタの配色テーマ
+
+Bright (Chrome, Clouds, Crimson Editor, Dawn, Dreamweaver, Eclipse, GitHub, IPlastic, Solarized Light, TextMate, Tomorrow, Xcode, Kuroir, KatzenMilch, SQL Server), 
+Dark (Ambiance, Chaos, Clouds Midnight, Dracula, Cobalt, Gruvbox, Green on Black, idle Fingers, krTheme, Merbivore, Merbivore Soft, Mono Industrial, Monokai, Nord Dark, Pastel on dark, Solarized Dark, Terminal, Tomorrow Night, Tomorrow Night Blue, Tomorrow Night Bright, Tomorrow Night 80s, Twilight, Vibrant Ink)
+
+## まとめ
+
+ここまで, Learn LaTeX の様々な特徴を紹介したが, Learn LaTeX は 環境構築が不要で, Overleaf のようなアカウント登録も不要なため, 気楽に LaTeX を試すことができるのではないだろうか. 
 
 [^1]: きっと存在する..はず..
