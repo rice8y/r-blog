@@ -95,8 +95,29 @@ chemfigとは, LaTeX で化学構造式を描画するためのパッケージ�
 \documentclass{ltjsarticle}
 \usepackage{chemfig}
 \begin{document}
-\definesubmol{A}{*6(=-*5(-*6(-=-=-)--N(--[::-60])-)=-=-)}
-\chemfig{([::+180]-!A)=[::+72]*5(-N=(-(-[::+54]!A)=[::-72]*5(-N(-[::-33,1.5,,,draw=none]Mn)-(=(-[::+72]!A)-[::-36]*5(=N-(=(-[::+54]!A)-[::-72]*5(-N-(-)=-=))-=-))-=-))-=-)}
+\schemestart
+\chemfig{[:-30]*6(=-=(-@{atoc}C([6]=[@{db}]@{atoo1}O)-H)-=-)}
+\arrow(start.mid east--.mid west){->[\chemfig{@{atoo2}\chemabove{O}{\scriptstyle\ominus}}H]}
+\chemmove[-stealth,shorten >=2pt,dash pattern=on 1pt off 1pt,thin]{
+\draw[shorten <=8pt](atoo2) ..controls +(up:10mm) and +(up:10mm)..(atoc);
+\draw[shorten <=2pt](db) ..controls +(left:5mm) and +(west:5mm)..(atoo1);}
+\chemfig{[:-30]*6(=-=(-C([6]-[@{sb1}]@{atoo1}\chembelow{O}{\scriptstyle\ominus})([2]-OH)-[@{sb2}]H)-=-)}
+\hspace{1cm}
+\chemfig{[:-30]*6((-@{atoc}C([6]=[@{db}]@{atoo2}O)-[2]H)-=-=-=)}
+\chemmove[-stealth,shorten <=2pt,shorten >=2pt,dash pattern=on 1pt off 1pt,thin]{
+\draw([yshift=-4pt]atoo1.270) ..controls +(0:5mm) and +(right:10mm)..(sb1);
+\draw(sb2) ..controls +(up:10mm) and +(north west:10mm)..(atoc);
+\draw(db) ..controls +(right:5mm) and +(east:5mm)..(atoo2);}
+\arrow(@start.base west--){0}[-75,2]
+{}
+\arrow
+\chemfig{[:-30]*6(=-=(-C([1]-@{atoo2}O-[@{sb}0]@{atoh}H)([6]=O))-=-)}
+\arrow{0}
+\chemfig{[:-30]*6((-C(-[5]H)(-[7]H)-[2]@{atoo1}\chemabove{O}{\scriptstyle\ominus})-=-=-=)}
+\chemmove[-stealth,shorten >=2pt,dash pattern=on 1pt off 1pt,thin]{
+\draw[shorten <=7pt](atoo1.90) ..controls +(+90:8mm) and +(up:10mm)..(atoh);
+\draw[shorten <=2pt](sb) ..controls +(up:5mm) and +(up:5mm)..(atoo2);}
+\schemestop
 \end{document}
 ```
 
