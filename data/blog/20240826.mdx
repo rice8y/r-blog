@@ -1,0 +1,43 @@
+---
+title: chemfig で化学構造式を描画する
+date: '2024-08-26'
+tags: ['LaTeX']
+summary: chemfig で化学構造式を描画してみた話.
+---
+
+## chemfig
+
+chemfigとは, LaTeX で化学構造式を描画するためのパッケージである. 
+
+## 使い方
+
+使い方は以下を参照されたい. 
+
+- [chemfig documentation](https://ftp.yz.yamagata-u.ac.jp/pub/CTAN/macros/generic/chemfig/chemfig-en.pdf)
+- [chemfigパッケージによる構造式描画](https://doratex.hatenablog.jp/entry/20141212/1418393703)
+- [chemfigパッケージの基本](https://www1.gifu-u.ac.jp/~fujilab/sphinx_html/chemfig/chemfig.html)
+
+## 使用例
+
+> [!NOTE]
+> 本記事では, LuaLaTeX を使用しています.
+> また, 以降で示す出力は TeX2img で画像化しています. 
+
+### ベンゼン
+
+```latex
+\documentclass{ltjsarticle}
+\usepackage{chemfig}
+\begin{document}
+\chemfig{*6(-=-=-=)} 
+\end{document}
+```
+
+![benz](/static/images/latex/benz.png)
+
+> [!NOTE]
+> 執筆中...
+
+
+
+
