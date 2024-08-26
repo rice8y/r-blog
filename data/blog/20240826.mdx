@@ -89,4 +89,17 @@ chemfigとは, LaTeX で化学構造式を描画するためのパッケージ�
 
 ![pph](/static/images/latex/pph.png)
 
+### $\mathrm{Cannizzaro}$ $/mathrm{reaction}$
+
+```latex
+\documentclass{ltjsarticle}
+\usepackage{chemfig}
+\begin{document}
+\definesubmol{A}{*6(=-*5(-*6(-=-=-)--N(--[::-60])-)=-=-)}
+\chemfig{([::+180]-!A)=[::+72]*5(-N=(-(-[::+54]!A)=[::-72]*5(-N(-[::-33,1.5,,,draw=none]Mn)-(=(-[::+72]!A)-[::-36]*5(=N-(=(-[::+54]!A)-[::-72]*5(-N-(-)=-=))-=-))-=-))-=-)}
+\end{document}
+```
+
+![cr](/static/images/latex/cr.png)
+
 [^1]: ダウンロード：[Mac 版](https://tex2img.tech/), [Windows 版](https://www.ms.u-tokyo.ac.jp/~abenori/soft/#TEX2IMG)
