@@ -60,5 +60,21 @@ chemfigとは, LaTeX で化学構造式を描画するためのパッケージ�
 
 ![pa](/static/images/latex/pa.png)
 
+### アミグダリン $(\mathrm{C_{20}H_{27}NO_{11}})$
+
+```latex
+\documentclass{ltjsarticle}
+\usepackage{chemfig}
+\begin{document}
+\setchemfig{cram width=2pt}
+\definesubmol{c1}{-[:200]-[:120]O-[:190]}
+\definesubmol{c2}{-[:170](-[:200,0.7]HO)<[:300](-[:170,0.6]HO)-[:10,,,,line width=2pt](-[:-40,0.6]OH)>[:-10]}
+\definesubmol{csub}{-[:155,0.65]-[:90,0.65]}
+\chemfig{O(!{c1}(!{csub}O(!{c1}(!{csub}OH)!{c2}))!{c2})-[:-30](-[:-90]CN)-[:30]*6(=-=-=-)}
+\end{document}
+```
+
+![amy](/static/images/latex/amy.png)
+
 
 
