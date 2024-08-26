@@ -23,7 +23,7 @@ chemfigとは, LaTeX で化学構造式を描画するためのパッケージ�
 > 本記事では, LuaLaTeX を使用しています.
 > また, 以降で示す出力は TeX2img[^1] で画像化しています. 
 
-### Benzene $(\mathrm{C_{6}H_{6}})$
+### $\mathrm{Benzene}$
 
 ```latex
 \documentclass{ltjsarticle}
@@ -35,7 +35,7 @@ chemfigとは, LaTeX で化学構造式を描画するためのパッケージ�
 
 ![benz](/static/images/latex/benz.png)
 
-### 2,4,6-trinitrotoluene $(\mathrm{C_{7}H_{5}N_{3}O_{6}})$
+### $\mathrm{2,4,6-trinitrotoluene}$
 
 ```latex
 \documentclass{ltjsarticle}
@@ -48,7 +48,7 @@ chemfigとは, LaTeX で化学構造式を描画するためのパッケージ�
 
 ![nitro](/static/images/latex/trinitro.png)
 
-### Phthalic anhydride $(\mathrm{C_{8}H_{4}O_{3}})$
+### $\mathrm{Phthalic}$ $\mathrm{anhydride}$
 
 ```latex
 \documentclass{ltjsarticle}
@@ -60,7 +60,7 @@ chemfigとは, LaTeX で化学構造式を描画するためのパッケージ�
 
 ![pa](/static/images/latex/pa.png)
 
-### Amygdalin $(\mathrm{C_{20}H_{27}NO_{11}})$
+### $\mathrm{Amygdalin}$
 
 ```latex
 \documentclass{ltjsarticle}
@@ -76,13 +76,14 @@ chemfigとは, LaTeX で化学構造式を描画するためのパッケージ�
 
 ![amy](/static/images/latex/amy.png)
 
-### Manganese 5,10,15,20-tetra(N-ethyl-3-carbazolyl) porphyrin $(\mathrm{C_{12}H_{18}N_{4}})$
+### $\mathrm{Manganese}$ $\mathrm{5,10,15,20-tetra}$ $\mathrm{(N-ethyl-3-carbazolyl)}$ $\mathrm{porphyrin}$
 
 ```latex
 \documentclass{ltjsarticle}
 \usepackage{chemfig}
 \begin{document}
-
+\definesubmol{A}{*6(=-*5(-*6(-=-=-)--N(--[::-60])-)=-=-)}
+\chemfig{([::+180]-!A)=[::+72]*5(-N=(-(-[::+54]!A)=[::-72]*5(-N(-[::-33,1.5,,,draw=none]Mn)-(=(-[::+72]!A)-[::-36]*5(=N-(=(-[::+54]!A)-[::-72]*5(-N-(-)=-=))-=-))-=-))-=-)}
 \end{document}
 ```
 
