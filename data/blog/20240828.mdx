@@ -7,6 +7,9 @@ summary: Julia で Lotka-Volterra 方程式を数値的に解いてみた話.
 
 ## Lotka-Volterra 方程式
 
+> [!NOTE]
+> Lotka-Volterra 方程式には, 被食者-捕食者系, 競争系, 相利共生系等のモデルが存在するが, 本記事では被食者-捕食者系のみを扱う.
+
 Lotka-Volterra 方程式とは, 生物の捕食-被食関係による個体数の変動を表現する数理モデルの一種であり, 以下で表される：
 
 $$
@@ -17,3 +20,70 @@ $$
 $$
 
 ここで, $x$ は被食者密度, $y$ は捕食者密度, $a$ は被食者の自然増加率, $b$ は捕食者の摂食率, $c$ は捕食者の自然死亡率, $\mu$ は捕食者が摂食エネルギーを繁殖に転換する効率を表す. 
+
+## 解法
+
+本記事では, Julia の DifferentialEquations を用いて解く.
+
+### モジュール読み込み
+
+まず, 必要なモジュールを読み込む. 
+
+```julia
+using DifferentialEquations
+using Plots
+plot_font = "Computer Modern"
+default(fontfamily=plot_font, linewidth=1, label=nothing, grid=true)
+```
+
+### 問題設定
+
+次に, Lotka-Volterra 方程式を Julia で定式化する.
+
+```julia
+function lotka_volterra!(du, u, p, t)
+    a, b, c, μ = p
+    x, y = u
+    du[1] = a * x - b * x * y
+    du[2] = μ * x * y - c * y
+end
+```
+
+### パラメータ設定
+
+次に, パラメータを設定する.
+
+```julia
+a = 1.1
+b = 0.4
+c = 0.4
+μ = 0.1
+
+p = (a, b, c, μ)
+```
+
+### 初期条件と階の範囲の設定
+
+次に, 初期条件と解の範囲を設定する.
+
+```julia
+u0 = [10.0, 5.0]
+tspan = (0.0, 50.0)
+```
+
+### 問題の定義と解の計算
+
+```julia
+prob = ODEProblem(lotka_volterra!, u0, tspan, p)
+sol = solve(prob)
+```
+
+### 結果のプロット
+
+計算結果をプロットする.
+
+```julia
+plot(sol, xlabel="Time", ylabel="Population", label=["Prey" "Predator"], dpi=300)
+```
+
+![lv01](/static/images/latex/lv01.png)
