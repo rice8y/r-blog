@@ -1,0 +1,61 @@
+---
+title: PGFPlots で高品質なグラフを描画する
+date: '2024-08-27'
+tags: ['LaTeX']
+summary: PGFPlots で高品質なグラフを描画してみた話.
+---
+
+## PGFPlots
+
+## 使用例
+
+> [!NOTE]
+> 本記事では, LuaLaTeX を使用しています.
+> また, 以降で示す出力は TeX2img[^1] で画像化しています. 
+
+### 2D Plots
+
+$$
+\begin{equation*}
+\mathbf{f}(x) = \begin{pmatrix} \sin x \\ \cos x \end{pmatrix}, \quad \forall x \in [-\pi, \pi]
+\end{equation*}
+$$
+
+```latex
+\documentclass{ltjsarticle}
+\usepackage[margin=0.25in]{geometry}
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = \(x\),
+    ylabel = {\(f(x)\)},
+]
+\addplot [
+    domain=-pi:pi, 
+    samples=100, 
+    color=red,
+]
+{sin(deg(x))};
+\addlegendentry{\(\sin x\)}
+\addplot [
+    domain=-pi:pi, 
+    samples=100, 
+    color=blue,
+    ]
+    {cos(deg(x))};
+\addlegendentry{\(\cos x\)}
+\end{axis}
+\end{tikzpicture}
+\end{document}
+```
+
+![sincos](\static\images\latex\sincos.png)
+
+### 3D Plots
+
+
+[^1]: ダウンロード：[Mac 版](https://tex2img.tech/), [Windows 版](https://www.ms.u-tokyo.ac.jp/~abenori/soft/#TEX2IMG)
