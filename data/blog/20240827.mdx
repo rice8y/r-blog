@@ -57,5 +57,36 @@ $$
 
 ### 3D Plots
 
+$$
+\begin{equation*}
+z=\dfrac{\sin r}{r},\quad r=\sqrt{x^{2}+y^{2}}
+\end{equation*}
+$$
+
+```latex
+\documentclass{ltjsarticle}
+\usepackage[margin=0.25in]{geometry}
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+      hide axis,
+      colormap/cool,
+    ]
+    \addplot3[
+      mesh,
+      samples=50,
+      domain=-8:8,
+    ]
+    {sin(deg(sqrt(x^2+y^2)))/sqrt(x^2+y^2)};
+    \addlegendentry{\(\frac{sin(r)}{r}\)}
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+
+![sin3d](/static/images/latex/sin3d.png)
 
 [^1]: ダウンロード：[Mac 版](https://tex2img.tech/), [Windows 版](https://www.ms.u-tokyo.ac.jp/~abenori/soft/#TEX2IMG)
