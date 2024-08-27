@@ -7,6 +7,11 @@ summary: PGFPlots で高品質なグラフを描画してみた話.
 
 ## PGFPlots
 
+## 使い方
+
+- [PGFPlots manual](https://ftp.kddilabs.jp/CTAN/graphics/pgf/contrib/pgfplots/doc/pgfplots.pdf)
+- [PGFPlots package](https://sharelatex-wiki-cdn-671420.c.cdn77.org/learn/latex/Pgfplots_package)
+
 ## 使用例
 
 > [!NOTE]
@@ -88,5 +93,35 @@ $$
 ```
 
 ![sin3d](/static/images/latex/sin3d.png)
+
+$$
+\begin{equation*}
+z=xe^{-x^{2}-y^{2}}
+\end{equation*}
+$$
+
+```latex
+\documentclass{ltjsarticle}
+\usepackage[margin=0.25in]{geometry}
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+      xlabel=$x$, ylabel=$y$,
+      small,
+    ]
+    \addplot3 [
+      contour lua,
+      domain=-2:2,
+      domain y=-1.3:1.3,
+    ] {exp(-x^2-y^2)*x};
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+
+![exp3d](/static/images/latex/exp3d.png)
 
 [^1]: ダウンロード：[Mac 版](https://tex2img.tech/), [Windows 版](https://www.ms.u-tokyo.ac.jp/~abenori/soft/#TEX2IMG)
