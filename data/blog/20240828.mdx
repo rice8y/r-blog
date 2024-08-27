@@ -36,6 +36,21 @@ plot_font = "Computer Modern"
 default(fontfamily=plot_font, linewidth=1, label=nothing, grid=true)
 ```
 
+<details>
+<summary>REPL</summary>
+```julia-repl
+julia> using DifferentialEquations
+
+julia> using Plots
+
+julia> plot_font = "Computer Modern"
+"Computer Modern"
+
+julia> default(fontfamily=plot_font, linewidth=1, label=nothing, grid=true)
+
+```
+</details>
+
 ### 問題設定
 
 次に, Lotka-Volterra 方程式を Julia で定式化する.
@@ -48,6 +63,20 @@ function lotka_volterra!(du, u, p, t)
     du[2] = μ * x * y - c * y
 end
 ```
+
+<details>
+<summary>REPL</summary>
+```julia-repl
+julia> function lotka_volterra!(du, u, p, t)
+           a, b, c, μ = p
+           x, y = u
+           du[1] = a * x - b * x * y
+           du[2] = μ * x * y - c * y
+       end
+lotka_volterra! (generic function with 1 method)
+
+```
+</details>
 
 ### パラメータ設定
 
@@ -62,6 +91,29 @@ c = 0.4
 p = (a, b, c, μ)
 ```
 
+<details>
+<summary>REPL</summary>
+```julia-repl
+julia> a = 1.1
+1.1
+
+julia> b = 0.4
+0.4
+
+julia> c = 0.4
+0.4
+
+julia> μ = 0.1
+0.1
+
+julia>
+
+julia> p = (a, b, c, μ)
+(1.1, 0.4, 0.4, 0.1)
+
+```
+</details>
+
 ### 初期条件と階の範囲の設定
 
 次に, 初期条件と解の範囲を設定する.
@@ -71,12 +123,97 @@ u0 = [10.0, 5.0]
 tspan = (0.0, 50.0)
 ```
 
+<details>
+<summary>REPL</summary>
+```julia-repl
+julia> u0 = [10.0, 5.0]
+2-element Vector{Float64}:
+ 10.0
+  5.0
+
+julia> tspan = (0.0, 50.0)
+(0.0, 50.0)
+
+```
+</details>
+
 ### 問題の定義と解の計算
 
 ```julia
 prob = ODEProblem(lotka_volterra!, u0, tspan, p)
 sol = solve(prob)
 ```
+
+<details>
+<summary>REPL</summary>
+```julia-repl
+julia> prob = ODEProblem(lotka_volterra!, u0, tspan, p)
+ODEProblem with uType Vector{Float64} and tType Float64. In-place: true
+timespan: (0.0, 50.0)
+u0: 2-element Vector{Float64}:
+ 10.0
+  5.0
+
+julia> sol = solve(prob)
+retcode: Success
+Interpolation: specialized 4th order "free" interpolation, specialized 2nd order "free" stiffness-aware interpolation
+t: 56-element Vector{Float64}:
+  0.0
+  0.10551052180168205
+  0.3026858596029679
+  0.544216162029267
+  0.8667001358219422
+  1.290752093822806
+  1.7003476232387265
+  2.2799589614331133
+  2.882391006071913
+  3.543472793323572
+  4.326489593554792
+  5.302659637431677
+  6.963443099602529
+  ⋮
+ 38.19836931152591
+ 39.838659848395615
+ 41.16261629602774
+ 42.54163919084672
+ 43.520484417635416
+ 44.36703417737004
+ 45.12268565170904
+ 45.803326845977956
+ 46.6942006009366
+ 47.56185147161654
+ 48.716821800426615
+ 50.0
+u: 56-element Vector{Vector{Float64}}:
+ [10.0, 5.0]
+ [9.035627005169454, 5.299839898200966]
+ [7.2519783179682475, 5.750076609572348]
+ [5.3322876509632415, 6.0725687751425825]
+ [3.445570572857435, 6.136242934717593]
+ [1.9876933916021085, 5.791725958718605]
+ [1.260857484176088, 5.246249684158559]
+ [0.7793800583895246, 4.4050613386031285]
+ [0.5774381211452372, 3.6027620299304046]
+ [0.5098173175276516, 2.865039146276961]
+ [0.5500951340758927, 2.181735189174335]
+ [0.7795716913377725, 1.572474529264101]
+ [2.118736661257719, 1.004176672543559]
+ ⋮
+ [1.0061244645004324, 1.3371372224811882]
+ [2.9857121817598737, 0.9292591888113896]
+ [7.767258822631018, 1.0644948778605032]
+ [13.712147771527462, 2.9448359380604394]
+ [7.006151179114605, 5.8233785729636]
+ [2.2798679109384095, 5.929732938997305]
+ [1.0060307334488037, 4.916269057596703]
+ [0.6374632520786015, 3.95149560119708]
+ [0.5046844403917583, 2.906203763361891]
+ [0.5490656370547375, 2.1478912561942285]
+ [0.8601521201225086, 1.462986213750023]
+ [1.884380037612957, 1.0323197430186637]
+
+```
+</details>
 
 ### 結果のプロット
 
@@ -85,5 +222,13 @@ sol = solve(prob)
 ```julia
 plot(sol, xlabel="Time", ylabel="Population", label=["Prey" "Predator"], dpi=300)
 ```
+
+<details>
+<summary>REPL</summary>
+```julia-repl
+julia> plot(sol, xlabel="Time", ylabel="Population", label=["Prey" "Predator"], dpi=300)
+
+```
+</details>
 
 ![lv01](/static/images/latex/lv01.png)
