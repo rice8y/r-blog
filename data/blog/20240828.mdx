@@ -1,0 +1,19 @@
+---
+title: Julia で Lotka-Volterra 方程式を数値的に解く
+date: '2024-08-28'
+tags: ['Julia']
+summary: Julia で Lotka-Volterra 方程式を数値的に解いてみた話.
+---
+
+## Lotka-Volterra 方程式
+
+Lotka-Volterra 方程式とは, 生物の捕食-被食関係による個体数の変動を表現する数理モデルの一種であり, 以下で表される：
+
+$$
+\begin{align*}
+&\dfrac{dx}{dt}=ax-bxy\\
+&\dfrac{dy}{dt}=-cy+\mu bxy
+\end{align*}
+$$
+
+ここで, $x$ は被食者密度, $y$ は捕食者密度, $a$ は被食者の自然増加率, $b$ は捕食者の摂食率, $c$ は捕食者の自然死亡率, $\mu$ は捕食者が摂食エネルギーを繁殖に転換する効率を表す. 
