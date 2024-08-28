@@ -257,6 +257,10 @@ julia> plot(sol, idxs=(1, 2), xlabel="Prey Population", ylabel="Predator Populat
 <b>図2:</b> 解の軌道
 </center>
 
-図2より, Lotka-Volterra 方程式の解が周期解となることが分かる.
+図2より, Lotka-Volterra 方程式の解が周期解 (閉軌道) となることが分かる.
+
+## まとめ
+
+今回は, Julia の DifferentialEquations を用いて Lotka-Volterra 方程式を解いたが, DifferentialEquations が提供するソルバを利用することで, 数値解法を実装する必要がなく便利であった. 
 
 [^1]: Julia の DE ソルバモジュール.
