@@ -23,7 +23,7 @@ $$
 
 ## 解法
 
-本記事では, Julia の DifferentialEquations を用いて解く.
+本記事では, Julia の DifferentialEquations[^1] を用いて解く.
 
 ### モジュール読み込み
 
@@ -232,3 +232,31 @@ julia> plot(sol, xlabel="Time", ylabel="Population", label=["Prey" "Predator"], 
 </details>
 
 ![lv01](/static/images/latex/lv01.png)
+<center>
+<b>図1:</b> 計算結果
+</center>
+
+### 解の軌道
+
+解の軌道をプロットする.
+
+```julia
+plot(sol, idxs=(1, 2), xlabel="Prey Population", ylabel="Predator Population", label=false, dpi=300)
+```
+
+<details>
+<summary>REPL</summary>
+```julia-repl
+julia> plot(sol, idxs=(1, 2), xlabel="Prey Population", ylabel="Predator Population", label=false, dpi=300)
+
+```
+</details>
+
+![lv02](/static/images/latex/lv02.png)
+<center>
+<b>図2:</b> 解の軌道
+</center>
+
+図2より, Lotka-Volterra 方程式の解が周期解となることが分かる.
+
+[^1]: Julia の DE ソルバモジュール.
