@@ -160,6 +160,8 @@ int main()
 
 ### コンパイル
 
+実際にコンパイルしてみる. コンパイルは以下のように行う.
+
 ```bash
 $ bison -d calc.y
 $ flex calc.l
@@ -170,6 +172,24 @@ calc.l:37:24: warning: format ‘%lf’ expects argument of type ‘double *’,
       |                        ^~~~~  ~~~~~~~
       |                               |
       |                               YYSTYPE * {aka int *}
+```
+
+上記のコンパイルにより, 実行ファイルが生成される. なお, Warning は無視する. また, コンパイルの際には以下のような `Makefile` を作成すると便利.
+
+```makefile:Makefile
+all: calc
+
+calc: calc.tab.c lex.yy.c
+	gcc -O2 -o calc calc.tab.c lex.yy.c -lfl -lm
+
+calc.tab.c calc.tab.h: calc.y
+	bison -d calc.y
+
+lex.yy.c: calc.l
+	flex calc.l
+
+clean:
+	rm -f calc *.o *.c *.h y.tab.* lex.yy.c
 ```
 
 ### 使用例
