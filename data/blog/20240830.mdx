@@ -1,0 +1,287 @@
+---
+title: bison/flex で簡単な演算を行う
+date: '2024-08-30'
+tags: ['bison/flex', 'yacc/lex', '']
+summary: bison/flex で簡単な演算が行えるREPL風プログラムを作成してみた話.
+---
+
+> [!NOTE]
+> 執筆中...
+
+## bison
+
+## flex
+
+## 実装
+
+### Lexer
+
+```l:calc.l
+%{
+#include <stdlib.h>
+#include <stdio.h>
+#include "calc.tab.h"
+extern YYSTYPE yylval;
+void yyerror(char*);
+%}
+
+%%
+
+"+" { return OP_ADD; }
+"-" { return OP_SUB; }
+"*" { return OP_MUL; }
+"/" { return OP_DIV; }
+"^" { return OP_POW; }
+"(" { return SYM_PRNL; }
+")" { return SYM_PRNR; }
+"," { return SYM_COMMA; }
+"π"|"pi"|"PI" { return SYM_PI; }
+"e"|"E" { return SYM_E; }
+"sin"|"SIN" { return FUNC_SIN; }
+"cos"|"COS" { return FUNC_COS; }
+"tan"|"TAN" { return FUNC_TAN; }
+"cot"|"COT" { return FUNC_COT; }
+"sec"|"SEC" { return FUNC_SEC; }
+"csc"|"CSC" { return FUNC_CSC; }
+"sqrt"|"SQRT" { return FUNC_SQRT; }
+"ceil"|"CEIL" { return FUNC_CEIL; }
+"floor"|"FLOOR" { return FUNC_FLOOR; }
+"abs"|"fabs"|"ABS"|"FABS" { return FUNC_ABS; }
+"log"|"LOG" { return FUNC_LOG; }
+"log10"|"LOG10" { return FUNC_LOG10; }
+"log7"|"LOG7" { return FUNC_LOG7; }
+"log5"|"LOG5" { return FUNC_LOG5; }
+"log3"|"LOG3" { return FUNC_LOG3; }
+"log2"|"LOG2" { return FUNC_LOG2; }
+"ln"|"LN" { return FUNC_LN; }
+[0-9]+(\.[0-9]+)? {
+    sscanf(yytext, "%lf", &yylval);
+    return NUM; 
+}
+\n { return EOL; }
+[ \t]+ {}
+"quit"|"exit" { return CMD_EXT; }
+[a-zA-Z]+ {
+    yyerror("ERROR: Unrecognized input!");
+}
+. {
+    yyerror("ERROR: Unrecognized input!");
+}
+
+%%
+
+int yywrap() { 
+    return 1; 
+}
+
+```
+
+### Parser
+
+```y:calc.y
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define YYSTYPE double
+int yylex(void);
+void yyerror(char*);
+%}
+
+%token NUM
+%token EOL
+%token SYM_PRNL SYM_PRNR SYM_COMMA SYM_PI SYM_E
+%token FUNC_ABS FUNC_SIN FUNC_COS FUNC_TAN FUNC_COT FUNC_SEC FUNC_CSC FUNC_SQRT FUNC_CEIL FUNC_FLOOR
+%token FUNC_LOG FUNC_LOG10 FUNC_LOG7 FUNC_LOG5 FUNC_LOG3 FUNC_LOG2 FUNC_LN
+%token CMD_EXT
+
+%left OP_ADD OP_SUB
+%left OP_MUL OP_DIV
+%left OP_POW
+
+%%
+
+g   : g e EOL { printf("%lf\n\nSimple-calculator> ", $2); }
+    | g EOL { printf("Simple-calculator> "); }
+    | g CMD_EXT { printf("Bye!\n\n"); YYACCEPT; }
+    |
+    ;
+e   : NUM
+    | SYM_PI { $$ = M_PI; }
+    | SYM_E { $$ = M_E; }
+    | e OP_ADD e { $$ = $1 + $3; }
+    | e OP_SUB e { $$ = $1 - $3; }
+    | e OP_MUL e { $$ = $1 * $3; }
+    | e OP_DIV e {
+        if ($3 == 0) {
+            yyerror("ERROR: Division by zero!");
+            YYABORT;
+        } else {
+            $$ = $1 / $3;
+        }
+    }
+    | e OP_POW e { $$ = pow($1, $3); }
+    | SYM_PRNL e SYM_PRNR { $$ = $2; }
+    | FUNC_SQRT SYM_PRNL e SYM_PRNR { $$ = sqrt($3); }
+    | FUNC_CEIL SYM_PRNL e SYM_PRNR { $$ = ceil($3); }
+    | FUNC_FLOOR SYM_PRNL e SYM_PRNR { $$ = floor($3); }
+    | FUNC_ABS SYM_PRNL e SYM_PRNR { $$ = fabs($3); }
+    | FUNC_SIN SYM_PRNL e SYM_PRNR { $$ = sin($3); }
+    | FUNC_COS SYM_PRNL e SYM_PRNR { $$ = cos($3); }
+    | FUNC_TAN SYM_PRNL e SYM_PRNR { $$ = sin($3) / cos($3); }
+    | FUNC_COT SYM_PRNL e SYM_PRNR { $$ = cos($3) / sin($3); }
+    | FUNC_SEC SYM_PRNL e SYM_PRNR { $$ = 1 / cos($3); }
+    | FUNC_CSC SYM_PRNL e SYM_PRNR { $$ = 1 / sin($3); }
+    | FUNC_LOG10 SYM_PRNL e SYM_PRNR { $$ = log($3) / log(10); }
+    | FUNC_LOG7 SYM_PRNL e SYM_PRNR { $$ = log($3) / log(7); }
+    | FUNC_LOG5 SYM_PRNL e SYM_PRNR { $$ = log($3) / log(5); }
+    | FUNC_LOG3 SYM_PRNL e SYM_PRNR { $$ = log($3) / log(3); }
+    | FUNC_LOG2 SYM_PRNL e SYM_PRNR { $$ = log($3) / log(2); }
+    | FUNC_LN SYM_PRNL e SYM_PRNR { $$ = log($3); }
+    | FUNC_LOG SYM_PRNL e SYM_COMMA e SYM_PRNR { $$ = log($5) / log($3); }
+    | OP_ADD e { $$ = $2; }
+    | OP_SUB e { $$ = 0 - $2; }
+    | error { YYABORT; }
+    ;
+%%
+
+void yyerror(char *s)
+{
+    fprintf(stderr, "%s\n\n", s);
+}
+
+int main()
+{
+    printf("Simple-calculator> ");
+    yyparse();
+    return 0;
+}
+```
+
+### コンパイル
+
+```bash
+$ bison -d calc.y
+$ flex calc.l
+$ gcc -O2 -o calc calc.tab.c lex.yy.c -lfl -lm
+calc.l: In function ‘yylex’:
+calc.l:37:24: warning: format ‘%lf’ expects argument of type ‘double *’, but argument 3 has type ‘YYSTYPE *’ {aka ‘int *’} [-Wformat=]
+   37 |         sscanf(yytext, "%lf", &yylval);
+      |                        ^~~~~  ~~~~~~~
+      |                               |
+      |                               YYSTYPE * {aka int *}
+```
+
+### 使用例
+
+#### 四則演算
+
+```bash
+$ ./calc
+Simple-calculator> 1 + 2
+3.000000
+
+Simple-calculator> 1 - 2
+-1.000000
+
+Simple-calculator> 1 / 2
+0.500000
+
+Simple-calculator> 2 * 3
+6.000000
+
+```
+
+#### 三角関数
+
+```bash
+$ ./calc
+Simple-calculator> sin(pi/2)
+1.000000
+
+Simple-calculator> cos(pi)
+-1.000000
+
+Simple-calculator> tan(0)
+0.000000
+
+Simple-calculator> sec(pi/4)
+1.414214
+
+Simple-calculator> cot(pi/4)
+1.000000
+
+```
+
+#### 対数関数
+
+```bash
+$ ./calc
+Simple-calculator> ln(e)
+1.000000
+
+Simple-calculator> log10(10)
+1.000000
+
+Simple-calculator> log2(4)
+2.000000
+
+```
+
+#### その他関数
+
+```bash
+$ ./calc
+Simple-calculator> abs(-1)
+1.000000
+
+Simple-calculator> floor(1.9)
+1.000000
+
+Simple-calculator> ceil(2.1)
+3.000000
+
+Simple-calculator> sqrt(4)
+2.000000
+
+```
+
+#### 終了コマンド
+
+```bash
+$ ./calc
+Simple-calculator> exit
+Bye!
+
+```
+
+### エラー処理
+
+#### 未定義エラー
+
+```bash
+$ ./calc
+Simple-calculator> exi
+ERROR: Unrecognized input!
+
+Simple-calculator> 
+```
+
+#### ゼロ除算エラー
+
+```bash
+$ ./calc
+Simple-calculator> 1 / 0
+ERROR: Division by zero!
+
+```
+
+#### 構文エラー
+
+```bash
+$ ./calc
+Simple-calculator> abs
+syntax error
+
+```
+
