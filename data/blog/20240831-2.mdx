@@ -1,0 +1,108 @@
+---
+title: Typst 入門
+date: '2024-08-31'
+tags: ['Typst', 'Rust']
+summary: 新興組版システムである Typst に入門してみた話.
+---
+
+> [!NOTE]
+> 本記事では, Rust がインストールされていることを前提とします. `cargo` 以外のインストール方法については [GitHub](https://github.com/typst/typst?tab=readme-ov-file#installation) を参照してください.
+
+## Typst
+
+## 環境構築
+
+まず, 以下のコマンドで Typst をインストールする. 
+
+```shell
+cargo install --git https://github.com/typst/typst --locked typst-cli
+```
+
+<details>
+<summary>インストールに少し困った話</summary>
+上記のコマンドでインストールしたところ, `openssl-sys` クレートが必要な OpenSSL ライブラリが見つからないと怒られてしまいました...
+
+**解決方法**: 
+
+まず, OpenSSL をインストールする.
+
+```shell
+sudo apt-get update
+sudo apt-get install libssl-dev
+```
+
+次に, ライブラリの場所を探す. 
+
+```shell
+find /usr -name 'libssl*'
+```
+
+`export` で `OPENSSL_LIB_DIR` と `OPENSSL_INCLUDE_DIR` を環境変数として追加する.
+
+再度, インストールする. 
+
+```shell
+cargo install --git https://github.com/typst/typst --locked typst-cli
+```
+
+無事にインストールできた!!
+</details>
+
+インストールが完了したら, インストールされているか確認する.
+
+```shell
+$ typst --version
+typst 0.11.0 (e6cdcc53)
+```
+
+## 使用方法
+
+まずは, Hello, World! してみる.
+
+```typst:hello.typ
+Hello, World!
+```
+
+`.typ` ファイルを作成し, 以下のコマンドでコンパイルする.
+
+```shell
+typst compile hello.typ
+```
+
+上記により, 以下が得られる.
+
+![hello](/static/images/typst/hello.png)
+
+Hello, World! は英語なので言語設定は不要であるが, 日本語を扱う際には以下のようにする. 
+
+```typst: ja.typ
+#set text(lang:"ja", font: "IPAexMincho")
+
+ねこはひらがなです。猫は漢字です。
+```
+
+出力は以下のようになる.
+
+![ja](/static/images/typst/ja.png)
+
+なお, Typst で使用できるフォントは `typst fonts` で確認できる. 
+
+<details>
+<summary>フォントのインストール例</summary>
+`typst fonts` で使用したいフォントが見つからない場合は, 以下のようにしてフォントをシステムにインストールする.
+
+```shell
+wget https://moji.or.jp/wp-content/ipafont/IPAexfont/IPAexfont00401.zip
+unzip IPAexfont00401.zip
+mkdir -p ~/.fonts
+cp IPAexfont00401/*.ttf ~/.fonts/
+fc-cache -f -v
+```
+
+インストールが成功したかは以下で確認する.
+
+```shell
+fc-list | grep "IPAexMincho"
+```
+</details>
+
