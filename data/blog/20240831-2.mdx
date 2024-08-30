@@ -237,7 +237,7 @@ inset: relativearraydictionaryfunction,
 ```typst:ex03.typ
 #set text(lang:"ja", font: "IPAexMincho")
 
-@tb01 にキャプション付きの表の例を示す.
+@tbl01 にキャプション付きの表の例を示す.
 
 #figure(
   table(
@@ -247,7 +247,7 @@ inset: relativearraydictionaryfunction,
     [`#figure()`], [図]
   ),
   caption: [キャプション]
-)<tb01>
+)<tbl01>
 ```
 
 **出力**:  
@@ -329,4 +329,38 @@ Typst に少し触れてみて思ったことは以下の通り.
 
 #### 図/表番号の参照が楽
 
-<!-- LaTeX では,  -->
+例として以下のような表を LaTeX で作成するとする. 
+
+```latex:tbl.tex
+\documentclass{ltjsarticle}
+\usepackage{float}
+
+\begin{document}
+\begin{table}[H]
+  \centering
+  \caption{Sample}
+  \label{tb01}
+  \begin{tabular}{|c|c|}\hline
+    \textbf{Header1}&\textbf{Header2}\\\hline
+    1&2\\\hline
+    3&4\\\hline
+  \end{tabular}
+\end{table}
+\end{document}
+```
+
+上記において, 表番号を参照する際には
+
+```latex
+表の例を表\ref{tb01}に示す.
+```
+
+とする必要がある. `\ref{}` では番号のみ参照できるため, `表\ref{}` とする必要があるのである.
+
+一方 Typst では, `@` で参照すると番号のみでなく "表" または "図" も表示される[^1]. 
+
+```latex
+\newcommand{\tref}[1]{表\ref{#1}}
+```
+
+[^1]: 一応 LaTeX でも, `\newcommand{\tref}[1]{表\ref{#1}}` とし, `\tref{}` とすることで同様のことが可能ではある (力技).
