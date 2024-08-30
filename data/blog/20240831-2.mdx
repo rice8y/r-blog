@@ -234,3 +234,37 @@ $ (partial u) / (partial t) + u (partial u) / (partial x) = nu (partial^(2) u) /
 
 **出力**:  
 ![ex03](/static/images/typst/ex03.png)
+
+表の細かな設定は `#show` で行える. 
+
+```typst:ex04.typ
+#set text(font: "New Computer Modern")
+
+#show table.cell.where(x: 1): set text(weight: "bold")
+#show table.cell.where(y: 0): strong
+
+#let frame(stroke) = (x, y) => (
+  left: if x > 0 { 0pt } else { stroke },
+  right: stroke,
+  top: if y < 2 { stroke } else { 0pt },
+  bottom: stroke,
+)
+
+#set table(
+  fill: (rgb("EAF2F5"), none),
+  stroke: frame(rgb("21222C")),
+)
+
+#table(
+  columns: (0.4fr, 1fr, 1fr, 1fr),
+  table.header[0.4fr][1fr][1fr][1fr],
+  [default], [bold], [default], [default],
+  [default], [bold], [default], [default]
+)
+```
+
+**出力**:  
+![ex04](/static/images/typst/ex04.png)
+
+上記では, ヘッダ (`table.cell.where(y: 0)`) を `strong` で太字にし, 左から2列目 (`table.cell.where(x: 1)`) のセル内の文字列を `set text(weight: "bold")` で太字にしている. 
+また, 条件分岐により 外枠のみ枠線を表示し, `fill`で特定列のセルの色を変更している. 
