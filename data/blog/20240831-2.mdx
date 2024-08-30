@@ -130,3 +130,22 @@ Typst では, 構文と関数で文字修飾が行える.
 |エスケープシーケンス|`\`||
 |コメント|`/* comment */`, `// comment`||
 
+実際の出力を見てみる.
+
+#### 段落区切り/改行
+
+```typst:ex01.typ
+#set text(lang:"ja", font: "IPAexMincho")
+
+段落1
+
+段落2 #parbreak()
+段落3
+
+ああああああああああああああ \
+いいいいいいいいいいいいいい #linebreak()
+うううううううううううううう
+```
+
+**出力**:
+![ex01](/static/images/typst/ex01.png)
