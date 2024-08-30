@@ -204,15 +204,15 @@ $ (partial u) / (partial t) + u (partial u) / (partial x) = nu (partial^(2) u) /
 <summary>Parameters</summary>
 ```txt
 table(
-columns: autointrelativefractionarray,
-rows: autointrelativefractionarray,
-gutter: autointrelativefractionarray,
-column-gutter: autointrelativefractionarray,
-row-gutter: autointrelativefractionarray,
-fill: nonecolorgradientarraypatternfunction,
-align: autoarrayalignmentfunction,
-stroke: nonelengthcolorgradientarraystrokepatterndictionaryfunction,
-inset: relativearraydictionaryfunction,
+    columns: autointrelativefractionarray,
+    rows: autointrelativefractionarray,
+    gutter: autointrelativefractionarray,
+    column-gutter: autointrelativefractionarray,
+    row-gutter: autointrelativefractionarray,
+    fill: nonecolorgradientarraypatternfunction,
+    align: autoarrayalignmentfunction,
+    stroke: nonelengthcolorgradientarraystrokepatterndictionaryfunction,
+    inset: relativearraydictionaryfunction,
 ..content,
 ) -> content
 ```
@@ -236,8 +236,9 @@ inset: relativearraydictionaryfunction,
 
 ```typst:ex03.typ
 #set text(lang:"ja", font: "IPAexMincho")
+#show figure.where(kind: table): set figure.caption(position: top)
 
-@tbl01 にキャプション付きの表の例を示す.
+@tb01 にキャプション付きの表の例を示す.
 
 #figure(
   table(
@@ -247,7 +248,7 @@ inset: relativearraydictionaryfunction,
     [`#figure()`], [図]
   ),
   caption: [キャプション]
-)<tbl01>
+)<tb01>
 ```
 
 **出力**:  
@@ -295,14 +296,14 @@ inset: relativearraydictionaryfunction,
 <summary>Parameters</summary>
 ```txt
 figure(
-content,
-placement: noneautoalignment,
-caption: nonecontent,
-kind: autostrfunction,
-supplement: noneautocontentfunction,
-numbering: nonestrfunction,
-gap: length,
-outlined: bool,
+    content,
+    placement: noneautoalignment,
+    caption: nonecontent,
+    kind: autostrfunction,
+    supplement: noneautocontentfunction,
+    numbering: nonestrfunction,
+    gap: length,
+    outlined: bool,
 ) -> content
 ```
 </details>
