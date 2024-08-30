@@ -76,7 +76,7 @@ typst compile hello.typ
 Hello, World! は英語なので言語設定は不要であるが, 日本語を扱う際には以下のようにする. 
 
 ```typst: ja.typ
-#set text(lang:"ja", font: "IPAexMincho")
+#set text(lang: "ja", font: "IPAexMincho")
 
 ねこはひらがなです。猫は漢字です。
 ```
@@ -132,20 +132,67 @@ Typst では, 構文と関数で文字修飾が行える.
 
 実際の出力を見てみる.
 
-#### 段落区切り/改行
-
 ```typst:ex01.typ
-#set text(lang:"ja", font: "IPAexMincho")
+#set text(lang: "ja", font: "Harano Aji Mincho")
 
-段落1
+= 見出し1
 
-段落2 #parbreak()
-段落3
+これは*構文による太字*, これは#strong[関数による太字]. \
+これは `\` による改行. #linebreak()
+これは `#linebreak()` による改行.
 
-ああああああああああああああ \
-いいいいいいいいいいいいいい #linebreak()
-うううううううううううううう
+これは空行による段落区切り. #parbreak()
+これは `#parbreak()` による段落区切り.
+
+以下は `-` による箇条書きリスト.
+- リスト1
+- リスト2
+- リスト3
+
+以下は `#list()` による箇条書きリスト.
+#list(
+  [リスト1],
+  [リスト2],
+  [リスト3]
+)
+
+以下は番号付きリスト.
++ これは `+`
+2. これは `2.`
+
+== 見出し2
+
+以下は `https://` によるハイパーリンク. \
+https://github.com/typst/typst
+
+以下は `#link()` によるハイパーリンク. \
+#link("https://github.com/typst/typst")
+
+/ 用語リスト: 用語リストは `/ 用語: 説明` とする.
+
+数式は以下のようにする.
+$ (partial u) / (partial t) + u (partial u) / (partial x) = nu (partial^(2) u) / (partial x^(2)) $
+
+'特殊引用符1', "特殊引用符2".
+
+#figure(
+  table(
+    columns: 2,
+  
+    [a], [b],
+    [c], [d]
+  ), 
+  caption: [表の例]
+)<tb1>
+
+@tb1 は表の例.
+
+// これはコメント.
+/*
+複数行のコメントは
+/**/ の方が良いかも.
+*/
 ```
 
-**出力**:
+**出力**:  
 ![ex01](/static/images/typst/ex01.png)
