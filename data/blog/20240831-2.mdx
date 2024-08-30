@@ -178,7 +178,6 @@ $ (partial u) / (partial t) + u (partial u) / (partial x) = nu (partial^(2) u) /
 #figure(
   table(
     columns: 2,
-  
     [a], [b],
     [c], [d]
   ), 
@@ -196,3 +195,42 @@ $ (partial u) / (partial t) + u (partial u) / (partial x) = nu (partial^(2) u) /
 
 **出力**:  
 ![ex01](/static/images/typst/ex01.png)
+
+### 表
+
+表は `#table()` を使用して作成する.
+
+```typst:ex02.typ
+#set text(lang:"ja", font: "IPAexMincho")
+
+#table(
+  columns: 2,
+  [*関数*], [*説明*],
+  [`#table()`], [表],
+  [`#figure()`], [図]
+)
+```
+
+**出力**:  
+![ex02](/static/images/typst/ex02.png)
+
+キャプションを付けるには `#figure()` を使用する. また, ラベル付けは `<>` で行い, `@` で参照する.
+
+```typst:ex03.typ
+#set text(lang:"ja", font: "IPAexMincho")
+
+@tb01 にキャプション付きの表の例を示す.
+
+#figure(
+  table(
+    columns: 2,
+    [*関数*], [*説明*],
+    [`#table()`], [表],
+    [`#figure()`], [図]
+  ),
+  caption: [キャプション]
+)<tb01>
+```
+
+**出力**:  
+![ex03](/static/images/typst/ex03.png)
