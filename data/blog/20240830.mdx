@@ -1,20 +1,39 @@
 ---
-title: bison/flex で簡単な計算機を作成する
+title: Bison/Flex で簡単な計算機を作成する
 date: '2024-08-30'
 tags: ['C', 'Lexer', 'Parser']
-summary: bison/flex で簡単な演算が行えるREPL風プログラムを作成してみた話.
+summary: Bison/Flex で簡単な演算が行えるREPL風プログラムを作成してみた話.
 ---
 
-> [!NOTE]
-> 執筆中...
+本記事では, コンパイラコンパイラを使用して簡単なREPL風計算機を作成する. なお, REPL風とは, 見た目がREPL風という意味であり, REPLの機能を実装するわけではない. 
+また, 本記事で使用している計算機環境は以下の通りである.
 
-## bison
+```txt:計算機環境
+OS: Ubuntu 22.04.4 LTS
+Kernel: Linux 5.15.153.1-microsoft-standard-WSL2, x86-64 architecture
+Virtualization: WSL2
+```
 
-## flex
+## Bison
+
+Bison とは, 構文解析器を生成するパーサジェネレータの一種であり, Yacc (Yet another compiler compiler) の上位互換ともいえる.
+
+## Flex
+
+Flex とは, 字句解析器を生成するレキシカルアナライザの一種であり, Lex (Lexical analyser generator) の上位互換ともいえる.
+
+Yacc/Lex (Bison/Flex) の記述方法については以下を参照されたい.
+
+- [GNU Bison - The Yacc-compatible Parser Generator](https://www.gnu.org/software/bison/manual/bison.pdf)
+- [westes/flex](https://github.com/westes/flex)
+- [Introducing Flex and Bison](https://www.oreilly.com/library/view/flex-bison/9780596805418/ch01.html)
+- [Better error handling using Flex and Bison](https://developer.ibm.com/tutorials/l-flexbison/)
 
 ## 実装
 
 ### Lexer
+
+まずは, 字句解析器を作成する.
 
 ```l:calc.l
 %{
@@ -47,6 +66,7 @@ void yyerror(char*);
 "ceil"|"CEIL" { return FUNC_CEIL; }
 "floor"|"FLOOR" { return FUNC_FLOOR; }
 "abs"|"fabs"|"ABS"|"FABS" { return FUNC_ABS; }
+"exp"|"EXP" { return FUNC_EXP; }
 "log"|"LOG" { return FUNC_LOG; }
 "log10"|"LOG10" { return FUNC_LOG10; }
 "log7"|"LOG7" { return FUNC_LOG7; }
@@ -73,10 +93,11 @@ void yyerror(char*);
 int yywrap() { 
     return 1; 
 }
-
 ```
 
 ### Parser
+
+次に, 構文解析器を作成する.
 
 ```y:calc.y
 %{
@@ -92,7 +113,7 @@ void yyerror(char*);
 %token EOL
 %token SYM_PRNL SYM_PRNR SYM_COMMA SYM_PI SYM_E
 %token FUNC_ABS FUNC_SIN FUNC_COS FUNC_TAN FUNC_COT FUNC_SEC FUNC_CSC FUNC_SQRT FUNC_CEIL FUNC_FLOOR
-%token FUNC_LOG FUNC_LOG10 FUNC_LOG7 FUNC_LOG5 FUNC_LOG3 FUNC_LOG2 FUNC_LN
+%token FUNC_LOG FUNC_LOG10 FUNC_LOG7 FUNC_LOG5 FUNC_LOG3 FUNC_LOG2 FUNC_LN FUNC_EXP
 %token CMD_EXT
 
 %left OP_ADD OP_SUB
@@ -126,6 +147,7 @@ e   : NUM
     | FUNC_CEIL SYM_PRNL e SYM_PRNR { $$ = ceil($3); }
     | FUNC_FLOOR SYM_PRNL e SYM_PRNR { $$ = floor($3); }
     | FUNC_ABS SYM_PRNL e SYM_PRNR { $$ = fabs($3); }
+    | FUNC_EXP SYM_PRNL e SYM_PRNR { $$ = exp($3); }
     | FUNC_SIN SYM_PRNL e SYM_PRNR { $$ = sin($3); }
     | FUNC_COS SYM_PRNL e SYM_PRNR { $$ = cos($3); }
     | FUNC_TAN SYM_PRNL e SYM_PRNR { $$ = sin($3) / cos($3); }
@@ -174,7 +196,7 @@ calc.l:37:24: warning: format ‘%lf’ expects argument of type ‘double *’,
       |                               YYSTYPE * {aka int *}
 ```
 
-上記のコンパイルにより, 実行ファイルが生成される. なお, Warning は無視する. また, コンパイルの際には以下のような `Makefile` を作成すると便利.
+上記のコンパイルにより, 実行ファイルが生成される. なお, Warning は無視する. また, コンパイルの際には以下のような `Makefile` を使用すると便利.
 
 ```makefile:Makefile
 all: calc
@@ -191,6 +213,22 @@ lex.yy.c: calc.l
 clean:
 	rm -f calc *.o *.c *.h y.tab.* lex.yy.c
 ```
+
+<details>
+<summary>Makefile の実行例</summary>
+```bash
+$ make
+bison -d calc.y
+flex calc.l
+gcc -O2 -o calc calc.tab.c lex.yy.c -lfl -lm
+calc.l: In function ‘yylex’:
+calc.l:40:20: warning: format ‘%lf’ expects argument of type ‘double *’, but argument 3 has type ‘YYSTYPE *’ {aka ‘int *’} [-Wformat=]
+   40 |     sscanf(yytext, "%lf", &yylval);
+      |                    ^~~~~  ~~~~~~~
+      |                           |
+      |                           YYSTYPE * {aka int *}
+```
+</details>
 
 ## 使用例
 
@@ -264,6 +302,9 @@ Simple-calculator> ceil(2.1)
 Simple-calculator> sqrt(4)
 2.000000
 
+Simple-calculator> exp(2)    
+7.389056
+
 ```
 
 ### 終了コマンド
@@ -304,3 +345,6 @@ syntax error
 
 ```
 
+## まとめ
+
+今回は, Bison/Flexを使用して簡単な計算機を作成したが, 機能面やエラー処理等において, 不十分な点が多いため時間があれば改善したい.
