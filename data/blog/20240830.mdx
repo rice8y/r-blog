@@ -189,11 +189,11 @@ $ bison -d calc.y
 $ flex calc.l
 $ gcc -O2 -o calc calc.tab.c lex.yy.c -lfl -lm
 calc.l: In function ‘yylex’:
-calc.l:37:24: warning: format ‘%lf’ expects argument of type ‘double *’, but argument 3 has type ‘YYSTYPE *’ {aka ‘int *’} [-Wformat=]
-   37 |         sscanf(yytext, "%lf", &yylval);
-      |                        ^~~~~  ~~~~~~~
-      |                               |
-      |                               YYSTYPE * {aka int *}
+calc.l:40:20: warning: format ‘%lf’ expects argument of type ‘double *’, but argument 3 has type ‘YYSTYPE *’ {aka ‘int *’} [-Wformat=]
+   40 |     sscanf(yytext, "%lf", &yylval);
+      |                    ^~~~~  ~~~~~~~
+      |                           |
+      |                           YYSTYPE * {aka int *}
 ```
 
 上記のコンパイルにより, 実行ファイルが生成される. なお, Warning は無視する. また, コンパイルの際には以下のような `Makefile` を使用すると便利.
