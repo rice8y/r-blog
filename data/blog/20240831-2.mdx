@@ -268,3 +268,21 @@ $ (partial u) / (partial t) + u (partial u) / (partial x) = nu (partial^(2) u) /
 
 上記では, ヘッダ (`table.cell.where(y: 0)`) を `strong` で太字にし, 左から2列目 (`table.cell.where(x: 1)`) のセル内の文字列を `set text(weight: "bold")` で太字にしている. 
 また, 条件分岐により 外枠のみ枠線を表示し, `fill`で特定列のセルの色を変更している. 
+
+### 図
+
+図は `#figure()` を使用して作成する.
+
+```typst:ex05.typ
+#set text(lang:"ja", font: "IPAexMincho")
+
+図の例を @fig01 に示す.
+
+#figure(
+  image("santa.png", width: 50%),
+  caption: [素敵な雪だるま]
+)<fig01>
+```
+
+**出力**:  
+![ex05](/static/images/typst/ex05.png)
