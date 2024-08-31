@@ -9,7 +9,8 @@ const GoogleMap = ({ src, width, height }) => (
     allowFullScreen={true}
     loading="lazy"
     referrerPolicy="no-referrer-when-downgrade"
+    title="Google Maps"
   />
-);
+)
 
 export default GoogleMap;
