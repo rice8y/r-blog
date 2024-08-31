@@ -1,0 +1,128 @@
+---
+title: LaTeX と Typst を比較
+date: '2024-09-01'
+tags: ['LaTeX', 'Typst']
+summary: LaTeX と Typst で類似文書を作成し比較してみた話.
+---
+
+[前回](20240831-2)は Typst に入門したが, 今回は実際に類似文書を LaTeX と Typst で作成し, 出力 (PDF) とソースコードを比較してみる.
+
+## LaTeX の場合
+
+```latex: sample.tex
+\documentclass{ltjsarticle}
+\usepackage{graphicx}
+\usepackage{amsmath} 
+\usepackage{float}
+\usepackage{cleveref}
+\crefname{figure}{図}{図}
+\crefname{table}{表}{表}
+\newcommand{\bhline}[1]{\noalign{\hrule height #1}}
+\newcommand{\ccol}[1]{\multicolumn{1}{c}{#1}}
+
+\begin{document}
+\section{LaTeXにおける数式}
+Burgers方程式は以下で表される：
+$$\dfrac{\partial u}{\partial t} + u \dfrac{\partial u}{\partial x} = \nu \dfrac{\partial^{2} u}{\partial x^{2}}$$
+ここで, $\nu$は動的粘性率である.
+\section{LaTeXにおける図/表}
+LaTeXにおける図/表について以下に示す.
+\subsection{図}
+素敵な雪だるまを\cref{fig01}に示す.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{santa.png}
+  \caption{素敵な雪だるま}
+  \label{fig01}
+\end{figure}
+\subsection{表}
+2つのBERTモデルにおけるACCの比較を\cref{tbl01}に示す.
+\begin{table}[H]
+  \centering
+  \caption{ACCによる評価}
+  \label{tbl01}
+  \begin{tabular}{ll}\bhline{1pt}
+    \ccol{ACC}&\ccol{Model}\\\hline
+    0.42&tohoku-nlp/bert-base-japanese-char-whole-word-masking\\
+    \textbf{0.44}&koheiduck/bert-japanese-finetuned-sentimen\\\bhline{1pt}
+  \end{tabular}
+\end{table}
+\end{document}
+```
+
+**出力**:
+![latex_ver](/static/images/latex/latex_ver.png)
+
+## Typst の場合
+
+```typst:sample.typ
+#set text(lang: "ja", font: "TeX Gyre Termes", size: 10pt)
+#show regex("[\p{scx:Han}\p{scx:Hira}\p{scx:Kana}]"): set text(lang: "ja", font: "Harano Aji Mincho", size: 10pt)
+#set page(
+  margin: (x: 20mm, y: 30mm),
+  numbering: "1",
+)
+#set heading(numbering: (..args) => {
+  let nums = args.pos()
+  if nums.len() == 1 {
+    return numbering("1 ", ..nums)
+  } else {
+    return numbering("1.1 ", ..nums)
+  }
+})
+#show heading: set block(spacing: 1.2em)
+#set par(first-line-indent: 1em, justify: true, leading: 0.8em)
+#show figure.where(kind: table): set figure.caption(position: top)
+#set table.hline(stroke: 0.6pt)
+#import "@preview/indenta:0.0.3": fix-indent
+#show: fix-indent()
+
+= Typstにおける数式
+
+Burgers方程式は以下で表される：
+$ frac(partial u, partial t) + u frac(partial u, partial x) = nu frac(partial^(2) u, partial x^(2)) $
+ここで, $nu$ は動的粘性率である.
+
+= Typstにおける図/表
+
+Typstにおける図/表について以下に示す.
+
+== 図
+
+素敵な雪だるまを @fig01 に示す.
+
+#figure(
+  image("santa.png", width: 50%),
+  caption: [素敵な雪だるま]
+)<fig01>
+
+== 表
+
+2つのBERTモデルにおけるACCの比較を @tbl01 に示す.
+
+#figure(
+  table(
+    stroke: none,
+    columns: 2,
+    align: (left, left),
+    table.hline(stroke: 1pt),
+    table.header(
+      table.cell(align: center)[ACC], 
+      table.cell(align: center)[Model]
+    ),
+    table.hline(),
+    [0.42], [tohoku-nlp/bert-base-japanese-char-whole-word-masking],
+    [*0.44*], [koheiduck/bert-japanese-finetuned-sentimen],
+    table.hline(stroke: 1pt)
+  ),
+  caption: [ACCによる評価]
+)<tbl01>
+```
+
+**出力**:
+![typst_ver](/static/images/typst/typst_ver.png)
+
+## 比較
+
+> ![NOTE]
+> 執筆中...
