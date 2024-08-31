@@ -13,7 +13,7 @@ const ContentSecurityPolicy = `
   media-src *.s3.amazonaws.com;
   connect-src *;
   font-src 'self';
-  frame-src giscus.app https://embed.music.apple.com/;
+  frame-src giscus.app https://embed.music.apple.com/ https://www.google.com/;
 `
 
 const securityHeaders = [
