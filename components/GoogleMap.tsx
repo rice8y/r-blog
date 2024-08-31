@@ -13,4 +13,4 @@ const GoogleMap = ({ src, width, height }) => (
   />
 )
 
-export default GoogleMap;
+export default GoogleMap
