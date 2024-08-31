@@ -65,10 +65,12 @@ LaTeXにおける図/表について以下に示す.
 #set heading(numbering: (..nums) => {
   nums.pos().map(str).join(".") + " "
 })
-#show heading: set block(spacing: 1.2em)
-#set par(first-line-indent: 1em, justify: true, leading: 0.8em)
+#show heading: set block(above: 1.4em, below: 1em)
+#set par(first-line-indent: 1.8em, justify: true, leading: 0.8em)
+#show par: set block(spacing: 1.2em)
 #show figure.where(kind: table): set figure.caption(position: top)
-#set table.hline(stroke: 0.6pt)
+#let hline = table.hline(stroke: 0.6pt)
+#let bhline = table.hline(stroke: 1pt)
 #import "@preview/indenta:0.0.3": fix-indent
 #show: fix-indent()
 
@@ -100,15 +102,15 @@ Typstにおける図/表について以下に示す.
     stroke: none,
     columns: 2,
     align: (left, left),
-    table.hline(stroke: 1pt),
+    bhline,
     table.header(
       table.cell(align: center)[ACC], 
       table.cell(align: center)[Model]
     ),
-    table.hline(),
+    hline,
     [0.42], [tohoku-nlp/bert-base-japanese-char-whole-word-masking],
     [*0.44*], [koheiduck/bert-japanese-finetuned-sentimen],
-    table.hline(stroke: 1pt)
+    bhline
   ),
   caption: [ACCによる評価]
 )<tbl01>
