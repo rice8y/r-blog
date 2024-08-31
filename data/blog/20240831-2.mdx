@@ -346,7 +346,7 @@ Typst に少し触れてみて, LaTeX と比較した際に思ったことは以
 \begin{table}[H]
   \centering
   \caption{Sample}
-  \label{tb01}
+  \label{tbl01}
   \begin{tabular}{|c|c|}\hline
     \textbf{Header1}&\textbf{Header2}\\\hline
     1&2\\\hline
@@ -361,11 +361,36 @@ Typst に少し触れてみて, LaTeX と比較した際に思ったことは以
 上記において, 表番号を参照する際には
 
 ```latex
-表の例を表\ref{tb01}に示す.
+表の例を表\ref{tbl01}に示す.
 ```
 
 のようにする必要がある. `\ref{}` では番号のみ参照できるため, `表\ref{}` とする必要があるのである. 
-一方 Typst では, `@` で参照すると番号のみでなく "表" または "図" も表示される[^1]. 
+一方 Typst では, `@` で参照すると番号のみでなく "表" または "図" も表示される.
+
+LaTeX でも例として以下のようにすれば可能.
+
+```latex:tbl.tex
+\documentclass{ltjsarticle}
+\usepackage{float}
+\usepackage{cleveref}
+\crefname{table}{表}{表}
+
+\begin{document}
+表の例を\cref{tbl01}に示す.
+\begin{table}[H]
+  \centering
+  \caption{Sample}
+  \label{tbl01}
+  \begin{tabular}{|c|c|}\hline
+    \textbf{Header1}&\textbf{Header2}\\\hline
+    1&2\\\hline
+    3&4\\\hline
+  \end{tabular}
+\end{table}
+\end{document}
+```
+
+上記は例として `cleveref` パッケージを使用しているが, 他にも `prettyre` パッケージ, `\autoref`, `\newcommand{\tref}[1]{表\ref{#1}}` 等の方法がある.
 
 #### 図/表のカスタマイズが簡単
 
@@ -390,5 +415,3 @@ LaTeX ならば文書クラスを指定するだけでかなりいい感じの�
 今回は, Typst に入門してみたが, まだ開発途上であることもあり LaTeX の代替としては不十分な部分が多いように感じる. 
 一方で, コンパイル速度やマークアップベースの記法, 柔軟なカスタマイズが可能である等の便利な点も多数あり, 頑張ってパラメータを設定すれば高品質な組版も十分可能であるように思う. 
 今後, 和文フォントに完璧に対応し, LaTeX の文書クラスのようなものが導入されると LaTeX の代替として十分なものになる気がする.
-
-[^1]: 一応 LaTeX でも, `\newcommand{\tref}[1]{表\ref{#1}}` とし, `\tref{}` とすることで同様のことが可能ではある (力技).
