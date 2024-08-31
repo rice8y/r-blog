@@ -56,6 +56,7 @@ LaTeXにおける図/表について以下に示す.
 ## Typst の場合
 
 ```typst:sample.typ
+#import "@preview/indenta:0.0.3": fix-indent
 #set text(lang: "ja", font: "TeX Gyre Termes", size: 10pt)
 #show regex("[\p{scx:Han}\p{scx:Hira}\p{scx:Kana}]"): set text(lang: "ja", font: "Harano Aji Mincho", size: 10pt)
 #set page(
@@ -71,7 +72,6 @@ LaTeXにおける図/表について以下に示す.
 #show figure.where(kind: table): set figure.caption(position: top)
 #let hline = table.hline(stroke: 0.6pt)
 #let bhline = table.hline(stroke: 1pt)
-#import "@preview/indenta:0.0.3": fix-indent
 #show: fix-indent()
 
 = Typstにおける数式
