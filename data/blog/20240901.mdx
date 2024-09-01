@@ -128,4 +128,16 @@ LaTeX では, 段落内で自動的にインデントされる[^1]が, Typst で
 このことに関して, 様々な議論 ([#311](https://github.com/typst/typst/issues/311)) がされているが未だ公式的なサポートは無いため本記事では [Indenta](https://github.com/flaribbit/indenta) を使用している. 
 一般公開から日が浅いため仕方がないとはいえ, この点に関しては LaTeX の方が便利. 
 
+### 段落番号について
+
+LaTeX では `\section` 等で段落区切りすると自動的に番号付けされ, `\section*` で無効化できる. Typst では `=` 等で段落区切りをするがデフォルトでは番号付けされないため, `#set` ルールで以下のように設定する必要がある. 
+
+```typst
+#set heading(numbering: (..nums) => {
+  nums.pos().map(str).join(".") + " "
+})
+```
+
+柔軟性はあるが LaTeX でも `\renewcommand\thesection{}` で変更できるため何とも言えない... 記述量は LaTeX の方が少ない?
+
 [^1]: デフォルト設定.
