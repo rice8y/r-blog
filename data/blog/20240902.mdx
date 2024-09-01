@@ -109,12 +109,16 @@ begin
 end Is_Prime;
 ```
 
+コンパイルする.
+
 ```shell
 $ gnat make is_prime.adb
 x86_64-linux-gnu-gcc-10 -c is_prime.adb
 x86_64-linux-gnu-gnatbind-10 -x is_prime.ali
 x86_64-linux-gnu-gnatlink-10 is_prime.ali
 ```
+
+実行してみる.
 
 ```shell
 $ ./is_prime
