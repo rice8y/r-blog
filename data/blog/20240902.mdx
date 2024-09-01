@@ -5,6 +5,9 @@ tags: ['Ada']
 summary: Ada を少しだけ体験してみた話.
 ---
 
+> [!NOTE]
+> 本記事では, パッケージ (`.ads`) については触れません.
+
 ## Ada
 
 <center>
@@ -80,16 +83,15 @@ Hello, world! できた!
 Ada で標準入出力, if 文, for 文を試すために, 簡単な素数判定プログラムを作成する.
 
 ```ada:is_prime.adb
-with Ada.Text_IO;        use Ada.Text_IO;
-with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Text_IO;        
+use Ada.Text_IO;
+with Ada.Integer_Text_IO; 
+use Ada.Integer_Text_IO;
 
 procedure Is_Prime is
-
    Number : Integer;
    Is_Prime : Boolean := True;
-
 begin
-
    Put("Enter a number to check if it's prime: ");
    Get(Number);
 
@@ -109,7 +111,6 @@ begin
    else
       Put_Line(Integer'Image(Number) & " is not a prime number.");
    end if;
-
 end Is_Prime;
 ```
 
