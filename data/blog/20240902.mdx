@@ -111,6 +111,8 @@ begin
    else
       Put_Line(Integer'Image(Number) & " is not a prime number.");
    end if;
+   
+   New_Line;
 end Is_Prime;
 ```
 
@@ -129,9 +131,11 @@ x86_64-linux-gnu-gnatlink-10 is_prime.ali
 $ ./is_prime
 Enter a number to check if it's prime: 3
  3 is a prime number.
+
 $ ./is_prime
 Enter a number to check if it's prime: 13726225
  13726225 is not a prime number.
+ 
 ```
 
 しっかりと素数判定できている.
