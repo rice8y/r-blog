@@ -1,0 +1,49 @@
+---
+title: Julia で波動方程式シミュレーション
+date: '2024-09-03'
+tags: ['Julia']
+drafe: true
+summary: Julia で波動方程式をシミュレーションしてみた話.
+---
+
+## 波動方程式
+
+波動方程式とは, 次式で表される定数係数二階線形偏微分方程式である. 
+
+$$
+\begin{equation*}
+\dfrac{1}{c^{2}}\dfrac{\partial^{2}u}{\partial t^{2}}=\Delta u
+\end{equation*}
+$$
+
+ここで, $c$ は波動の位相速度を表す係数である.
+
+### 1次元波動方程式
+
+1次元の場合, 次式で表される.
+
+$$
+\begin{equation*}
+\dfrac{1}{c^{2}}\dfrac{\partial^{2}u}{\partial t^{2}}=\dfrac{\partial^{u}}{\partial x^{2}}
+\end{equation*}
+$$
+
+### 2次元波動方程式
+
+2次元の場合, 次式で表される.
+
+$$
+\begin{equation*}
+\dfrac{1}{c^{2}}\dfrac{\partial^{2}u}{\partial t^{2}}=\dfrac{\partial^{u}}{\partial x^{2}}+\dfrac{\partial^{2}u}{\partial y^{2}}
+\end{equation*}
+$$
+
+### 3次元波動方程式
+
+3次元の場合, 次式で表される.
+
+$$
+\begin{equation*}
+\dfrac{1}{c^{2}}\dfrac{\partial^{2}u}{\partial t^{2}}=\dfrac{\partial^{u}}{\partial x^{2}}+\dfrac{\partial^{2}u}{\partial y^{2}}+\dfrac{\partial^{2}u}{\partial z^{2}}
+\end{equation*}
+$$
