@@ -28,6 +28,45 @@ $$
 \end{equation*}
 $$
 
+```julia:wave_1d.jl
+using DifferentialEquations
+using Plots
+using LaTeXStrings
+plot_font = "Computer Modern"
+default(fontfamily=plot_font, linewidth=1, label=nothing, grid=true)
+
+L = 1.0
+c = 1.0
+nx = 100
+dx = L / (nx - 1)
+x = range(0, stop=L, length=nx)
+
+u0 = exp.(-100 .* (x .- L/2).^2)
+v0 = zeros(nx)
+
+function wave_eq!(du, u, p, t)
+    du[1:nx] .= u[nx+1:2*nx]
+    for i in 2:nx-1
+        du[nx+i] = c^2 * (u[i+1] - 2u[i] + u[i-1]) / dx^2
+    end
+    du[nx+1] = 0.0
+    du[2*nx] = 0.0
+end
+
+u0_combined = [u0; v0]
+tspan = (0.0, 2.0)
+
+prob = ODEProblem(wave_eq!, u0_combined, tspan)
+sol = solve(prob, Tsit5(), dt=0.01)
+
+@gif for (i, u) in enumerate(sol.u)
+    t = sol.t[i]
+    plot(x, u[1:nx], ylim=(-1, 1), xlabel=L"x", ylabel=L"u(x,t)", title=L"t=" * string(round(t, digits=2)), lw=2, dpi=300)
+end
+```
+
+![wave_1d](/static/images/julia/wave_1d.gif)
+
 ### 2次元波動方程式
 
 2次元の場合, 次式で表される.
