@@ -1,0 +1,55 @@
+---
+title: TeX 入門
+date: '2024-09-04'
+tags: ['TeX']
+summary: 
+---
+
+## TeX
+
+### Hello, TeX!
+
+まずは, Hello, world! ならぬ Hello, TeX! をする. TeX における標準入出力を行うためのマクロを以下のように定義する.
+
+```tex:stdio.tex
+\def \ReadStdin(#1){
+  {
+    \endlinechar = -1
+    \global\read 0 to #1
+  }
+}
+
+\def \WriteStdout(#1){
+  \immediate\write 0 {#1}
+}
+```
+
+以降では, 上記のファイルを読み込んで `\ReadStdin`, `\WriteStdout` を使用する.
+
+Hello, TeX! をするには以下のように記述する.
+
+```tex:hello.tex
+\input{stdio}
+
+\ReadStdin(\Name)
+\WriteStdout(Hello, \Name!)
+
+\end
+```
+
+続いて, 以下のように実行する[^1]. なお, 本記事では LuaTeX を使用する.  
+
+```txt
+$ luatex --halt-on-error hello.tex 
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./hello.tex (./stdio.tex)
+\Name =TeX
+Hello, TeX!
+)
+warning  (pdf backend): no pages of output.
+Transcript written on hello.log.
+
+```
+
+[^1]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
