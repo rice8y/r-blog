@@ -28,7 +28,7 @@ $$
 \end{equation*}
 $$
 
-本節では, 境界条件はディリクレ境界条件とし, 初期値はガウス分布とする.
+本節では, 境界条件はディリクレ境界条件とし, 初期変位はガウス分布とする.
 
 ```julia:wave_1d.jl
 using DifferentialEquations
@@ -78,6 +78,8 @@ $$
 \dfrac{1}{c^{2}}\dfrac{\partial^{2}u}{\partial t^{2}}=\dfrac{\partial^{u}}{\partial x^{2}}+\dfrac{\partial^{2}u}{\partial y^{2}}
 \end{equation*}
 $$
+
+本節では, 境界条件はディリクレ境界条件とし, 初期変位はガウス分布とする.
 
 ```julia:wave_2d.jl
 using DifferentialEquations
@@ -138,3 +140,78 @@ $$
 \dfrac{1}{c^{2}}\dfrac{\partial^{2}u}{\partial t^{2}}=\dfrac{\partial^{u}}{\partial x^{2}}+\dfrac{\partial^{2}u}{\partial y^{2}}+\dfrac{\partial^{2}u}{\partial z^{2}}
 \end{equation*}
 $$
+
+本節では, 境界条件はディリクレ境界条件とし, 初期変位はガウス分布とする.
+
+```julia:wave_3d.jl
+using DifferentialEquations
+using Plots
+using LaTeXStrings
+
+plot_font = "Computer Modern"
+default(fontfamily=plot_font, linewidth=1, label=nothing, grid=true)
+
+Lx = 1.0
+Ly = 1.0
+Lz = 1.0
+c = 1.0
+nx = 30
+ny = 30
+nz = 30
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dz = Lz / (nz - 1)
+x = range(0, stop=Lx, length=nx)
+y = range(0, stop=Ly, length=ny)
+z = range(0, stop=Lz, length=nz)
+
+u0 = [exp(-100 * ((xi - Lx/2)^2 + (yi - Ly/2)^2 + (zi - Lz/2)^2)) for xi in x, yi in y, zi in z]
+v0 = zeros(nx, ny, nz)
+
+u0_flat = reshape(u0, :)
+v0_flat = reshape(v0, :)
+u0_combined = [u0_flat; v0_flat]
+
+function wave_eq!(du, u, p, t)
+    u_field = reshape(u[1:nx*ny*nz], nx, ny, nz)
+    v_field = reshape(u[nx*ny*nz+1:end], nx, ny, nz)
+    
+    du_field = zeros(nx, ny, nz)
+    dv_field = zeros(nx, ny, nz)
+
+    for i in 2:nx-1
+        for j in 2:ny-1
+            for k in 2:nz-1
+                du_field[i, j, k] = v_field[i, j, k]
+                dv_field[i, j, k] = c^2 * (
+                    (u_field[i+1, j, k] - 2u_field[i, j, k] + u_field[i-1, j, k]) / dx^2 +
+                    (u_field[i, j+1, k] - 2u_field[i, j, k] + u_field[i, j-1, k]) / dy^2 +
+                    (u_field[i, j, k+1] - 2u_field[i, j, k] + u_field[i, j, k-1]) / dz^2
+                )
+            end
+        end
+    end
+
+    du_field[:, 1, :] .= 0.0
+    du_field[:, ny, :] .= 0.0
+    du_field[:, :, 1] .= 0.0
+    du_field[:, :, nz] .= 0.0
+
+    du_combined = [reshape(du_field, :); reshape(dv_field, :)]
+    du .= du_combined
+end
+
+tspan = (0.0, 2.0)
+
+prob = ODEProblem(wave_eq!, u0_combined, tspan)
+sol = solve(prob, Tsit5(), dt=0.01)
+
+@gif for (i, u) in enumerate(sol.u)
+    t = sol.t[i]
+    u_field = reshape(u[1:nx*ny*nz], nx, ny, nz)
+    
+    surface(x, y, u_field[:, :, Int(floor(nz/2))], clim=(-1, 1), zlims=(-1, 1), xlabel=L"x", ylabel=L"y", zlabel=L"u", title=L"t=" * string(round(t, digits=2)), dpi=300)
+end
+```
+
+![wave_3d](/static/images/julia/wave_3d.gif)
