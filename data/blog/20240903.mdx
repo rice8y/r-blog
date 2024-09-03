@@ -79,6 +79,56 @@ $$
 \end{equation*}
 $$
 
+```julia:wave_2d.jl
+using DifferentialEquations
+using Plots
+using LaTeXStrings
+plot_font = "Computer Modern"
+default(fontfamily=plot_font, linewidth=1, label=nothing, grid=true)
+
+Lx = 1.0
+Ly = 1.0
+c = 1.0
+nx = 50
+ny = 50
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+x = range(0, stop=Lx, length=nx)
+y = range(0, stop=Ly, length=ny)
+
+u0 = [exp(-100 * ((xi - Lx/2)^2 + (yi - Ly/2)^2)) for xi in x, yi in y]
+v0 = zeros(nx, ny)
+
+function wave_eq!(du, u, p, t)
+    du[1:nx, 1:ny] .= u[nx+1:2*nx, 1:ny]
+    for i in 2:nx-1
+        for j in 2:ny-1
+            du[nx+i, j] = c^2 * (
+                (u[i+1, j] - 2u[i, j] + u[i-1, j]) / dx^2 +
+                (u[i, j+1] - 2u[i, j] + u[i, j-1]) / dy^2
+            )
+        end
+    end
+    du[nx+1, :] .= 0.0
+    du[2*nx, :] .= 0.0
+    du[:, 1] .= 0.0
+    du[:, ny] .= 0.0
+end
+
+u0_combined = [u0; v0]
+tspan = (0.0, 2.0)
+
+prob = ODEProblem(wave_eq!, u0_combined, tspan)
+sol = solve(prob, Tsit5(), dt=0.01)
+
+@gif for (i, u) in enumerate(sol.u)
+    t = sol.t[i]
+    heatmap(x, y, u[1:nx, 1:ny], clim=(-1, 1), xlabel=L"x", ylabel=L"y", title=L"t=" * string(round(t, digits=2)), dpi=300)
+end
+```
+
+![wave_2d](/static/images/julia/wave_2d.gif)
+
 ### 3次元波動方程式
 
 3次元の場合, 次式で表される.
