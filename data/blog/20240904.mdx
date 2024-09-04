@@ -158,9 +158,11 @@ Transcript written on ex01.log.
 \newcount \Mydec
 \newcount \Myoct
 \newcount \Myhex
+
 \Mydec = 10
 \Myoct = '12
 \Myhex = "A
+
 \WriteStdout(\Mydec is \number \Mydec.)
 \WriteStdout(\Myoct is \number \Myoct.)
 \WriteStdout(\Myhex is \number \Myhex.)
@@ -183,5 +185,75 @@ Transcript written on ex02.log.
 
 ```
 
+また, 整数リテラルの前後に展開されるトークンを以下のように置くと, 整数リテラルと展開されるトークンが (展開されて) 繋がってしまう.
+
+```tex:ex03.tex
+\input{stdio}
+
+\newcount \MynumOne
+\newcount \MynumTwo
+\def \One{1}
+
+\MynumOne = 12\One
+\MynumTwo = \One12
+
+\WriteStdout(\MynumOne is \number \MynumOne.)
+\WriteStdout(\MynumTwo is \number \MynumTwo.)
+\end
+```
+
+実行結果は以下のようになる.
+
+```txt
+$ luatex --halt-on-error ex03.tex
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./ex03.tex (./stdio.tex)
+\MynumOne is 121.
+\MynumTwo is 112.
+)
+warning  (pdf backend): no pages of output.
+Transcript written on ex03.log.
+
+```
+
+上記の実行結果より, まず, `\One` が展開され[^3], その後, 整数リテラルと繋がっていることが分かる.
+
+これを防ぐには, 空白の文字トークンや `\relax` を入れる.
+
+```tex:ex04.tex
+\input{stdio}
+
+\newcount \MynumOne
+\newcount \MynumTwo
+\def \One{1}
+
+\MynumOne = 12 \One
+\MynumTwo = 12\relax\One
+
+\WriteStdout(\MynumOne is \number \MynumOne.)
+\WriteStdout(\MynumTwo is \number \MynumTwo.)
+\end
+```
+
+実行結果は以下のようになる.
+
+```txt
+$ luatex --halt-on-error ex04.tex
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./ex04.tex (./stdio.tex)
+\MynumOne is 12.
+\MynumTwo is 12.
+[1{c:/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])<c:/texlive/2
+022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on ex04.pdf (1 page, 8173 bytes).
+Transcript written on ex04.log.
+
+```
+
+なお, `\Mynum = \One\relax12` とすると, `\Mynum` には `1` が代入される. これは, 制御トークンの後ろの空白は全て無視されるためである.
+
 [^1]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
 [^2]: TeX で `1+2` とすると `1`, `+`, `2` というトークン列に分解される.
+[^3]: 整数リテラルとして扱えるトークンがある可能性があるため.
