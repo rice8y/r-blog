@@ -254,6 +254,51 @@ Transcript written on ex04.log.
 
 なお, `\Mynum = \One\relax12` とすると, `\Mynum` には `1` が代入される. これは, 制御トークンの後ろの空白は全て無視されるためである.
 
+### 整数演算
+
+整数演算では, 加算を `\advance`[^4], 乗算を `\multiply`, 除算を `\divide` で行える. 
+
+```tex:ex05.tex
+\input{stdio}
+
+\newcount \MynumOne
+\newcount \MynumTwo
+
+\MynumOne = 10
+\MynumTwo = -5
+
+\advance \MynumOne by 5
+\WriteStdout(\MynumOne is \number \MynumOne)
+
+\advance \MynumOne by \MynumTwo
+\WriteStdout(\MynumOne is \number \MynumOne)
+
+\multiply \MynumOne by 2
+\WriteStdout(\MynumOne is \number \MynumOne)
+
+\divide \MynumOne by \MynumTwo
+\WriteStdout(\MynumOne is \number \MynumOne)
+\end
+```
+
+実行結果は以下のようになる.
+
+```txt
+$ luatex --halt-on-error ex05.tex
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./ex05.tex (./stdio.tex)
+\MynumOne is 15
+\MynumOne is 10
+\MynumOne is 20
+\MynumOne is -4
+)
+warning  (pdf backend): no pages of output.
+Transcript written on ex05.log.
+
+```
+
 [^1]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
 [^2]: TeX で `1+2` とすると `1`, `+`, `2` というトークン列に分解される.
 [^3]: 整数リテラルとして扱えるトークンがある可能性があるため.
+[^4]: 減算は負数を加算することで実現する.
