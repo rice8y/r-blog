@@ -117,7 +117,9 @@ TeX の処理系は以下の4つのプロセッサから構成されている.
 |何もしない命令|`\relax`|
 |組版用の命令||
 
-### 整数変数
+### 整数
+
+#### 整数変数
 
 整数変数は `\newcount` で定義する[^2].
 
@@ -148,7 +150,7 @@ Transcript written on ex01.log.
 
 上記の実行結果より, `\Mynum` は展開されないが, `\number \Mynum` は展開されていることが分かる.
 
-### 整数リテラル
+#### 整数リテラル
 
 整数リテラルは, デフォルトで10進数, `'` で8進数, `"` で16進数となる.
 
@@ -254,7 +256,7 @@ Transcript written on ex04.log.
 
 なお, `\Mynum = \One\relax12` とすると, `\Mynum` には `1` が代入される. これは, 制御トークンの後ろの空白は全て無視されるためである.
 
-### 整数演算
+#### 整数演算
 
 整数演算では, 加算を `\advance`[^4], 乗算を `\multiply`, 除算を `\divide` で行える. 
 
@@ -298,7 +300,7 @@ Transcript written on ex05.log.
 
 ```
 
-### 定数
+#### 定数
 
 定数は, `\chardef` で定義する.
 
@@ -322,6 +324,36 @@ This is LuaTeX, Version 1.15.0 (TeX Live 2022)
 )
 warning  (pdf backend): no pages of output.
 Transcript written on ex06.log.
+
+```
+
+### 条件分岐
+
+条件分岐は `\if...\fi` または `\if...\else...\fi` で記述できる.
+
+```tex:ex07.tex
+\input{stdio}
+
+\newcount \Mynum
+\Mynum = 1
+
+\ifnum \Mynum > 0 \WriteStdout(Plus)\else \WtiteStdout(Minus)\fi
+\ifnum \Mynum = 1 \WriteStdout(Ok)\fi
+\ifnum 2 < \Mynum \WriteStdout(Over)\fi
+\end
+
+```
+
+```txt
+$ luatex --halt-on-error ex07.tex
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./ex07.tex (./stdio.tex)
+Plus
+Ok
+)
+warning  (pdf backend): no pages of output.
+Transcript written on ex07.log.
 
 ```
 
