@@ -30,11 +30,9 @@ Hello, TeX! をするには以下のように記述する.
 
 ```tex:hello.tex
 \input{stdio}
-
 \ReadStdin(\Name)
 \WriteStdout(Hello, \Name!)
-
-\end
+\bye
 ```
 
 続いて, 以下のように実行する[^1]. なお, 本記事では LuaTeX を使用する.  
@@ -53,6 +51,29 @@ Transcript written on hello.log.
 ```
 
 上記の実行結果より, 標準入力として `\Name =` が求められ, `TeX` と入力すると, 標準出力で `Hello, TeX!` が出力されていることが分かる.
+
+<details>
+<summary>単なる Hello, world! の場合</summary>
+
+```julia:hello.jl
+\input{stdio}
+\WriteStdout(Hello, world!)
+\bye
+```
+
+**実行結果**
+```txt
+luatex --halt-on-error hello.tex
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./hello.tex (./stdio.tex)
+Hello, world!
+)
+warning  (pdf backend): no pages of output.
+Transcript written on hello.log.
+
+```
+</details>
 
 ### プロセッサ
 
