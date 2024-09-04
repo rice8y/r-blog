@@ -146,7 +146,7 @@ Transcript written on ex01.log.
 
 ```
 
-上記の実行結果より, `\Mynum` は展開されないが, `\Count \Mynum` は展開されていることが分かる.
+上記の実行結果より, `\Mynum` は展開されないが, `\number \Mynum` は展開されていることが分かる.
 
 ### 整数リテラル
 
@@ -295,6 +295,33 @@ This is LuaTeX, Version 1.15.0 (TeX Live 2022)
 )
 warning  (pdf backend): no pages of output.
 Transcript written on ex05.log.
+
+```
+
+### 定数
+
+定数は, `\chardef` で定義する.
+
+```tex:ex06.tex
+\input{stdio}
+
+\chardef \One = 1
+
+\WriteStdout(\One is \number \One.)
+\end
+```
+
+実行結果は以下のようになる.
+
+```txt
+luatex --halt-on-error ex06.tex
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./ex06.tex (./stdio.tex)
+\One is 1.
+)
+warning  (pdf backend): no pages of output.
+Transcript written on ex06.log.
 
 ```
 
