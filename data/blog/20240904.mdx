@@ -344,6 +344,8 @@ Transcript written on ex06.log.
 
 ```
 
+実行結果は以下のようになる.
+
 ```txt
 $ luatex --halt-on-error ex07.tex
 This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
@@ -356,6 +358,8 @@ warning  (pdf backend): no pages of output.
 Transcript written on ex07.log.
 
 ```
+
+上記の実行結果より, `\Mynum` は0より大きく, 1と等しいため `Plus` と `Ok` が展開され出力されていることが分かる. また, `\Mynun` は 2より小さいため, `Over` は展開されず出力されていないことも分かる.
 
 [^1]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
 [^2]: TeX で `1+2` とすると `1`, `+`, `2` というトークン列に分解される.
