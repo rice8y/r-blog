@@ -119,7 +119,7 @@ TeX の処理系は以下の4つのプロセッサから構成されている.
 
 ### 整数変数
 
-整数変数は `\newcount` で定義する.
+整数変数は `\newcount` で定義する[^2].
 
 ```tex:ex01.tex
 \input{stdio}
@@ -148,5 +148,40 @@ Transcript written on ex01.log.
 
 上記の実行結果より, `\Mynum` は展開されないが, `\Count \Mynum` は展開されていることが分かる.
 
+### 整数リテラル
+
+整数リテラルは, デフォルトで10進数, `'` で8進数, `"` で16進数となる.
+
+```tex:ex02.tex
+\input{stdio}
+
+\newcount \Mydec
+\newcount \Myoct
+\newcount \Myhex
+\Mydec = 10
+\Myoct = '12
+\Myhex = "A
+\WriteStdout(\Mydec is \number \Mydec.)
+\WriteStdout(\Myoct is \number \Myoct.)
+\WriteStdout(\Myhex is \number \Myhex.)
+\end
+```
+
+実行結果は以下のようになる.
+
+```txt
+$ luatex --halt-on-error ex02.tex
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./ex02.tex (./stdio.tex)
+\Mydec is 10.
+\Myoct is 10.
+\Myhex is 10.
+)
+warning  (pdf backend): no pages of output.
+Transcript written on ex02.log.
+
+```
 
 [^1]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
+[^2]: TeX で `1+2` とすると `1`, `+`, `2` というトークン列に分解される.
