@@ -438,7 +438,43 @@ Transcript written on ex09.log.
 
 #### 新しい条件分岐の作成
 
+新しい条件分岐の制御トークンは, `\newif` で作成できる. `\newif \if<条件名>` で新しい条件分岐を定義すると, `\if<条件名>` という条件分岐の制御トークンに加え, 条件を真にする `\<条件名>true` と条件を偽にする `\<条件名>false` という制御トークンが定義される.
 
+```tex:ex10.tex
+\input{stdio}
+
+\newif \ifInRange
+
+\def \CheckInRange(#1<=#2<=#3){
+  \InRangetrue
+  \ifnum #2 < #1 \InRangefalse \fi
+  \ifnum #3 < #2 \InRangefalse \fi
+}
+
+\CheckInRange(0<=1<=2)
+\ifInRange \WriteStdout(ok)\else \WriteStdout(out)\fi
+
+\CheckInRange(-2<=1<=0)
+\ifInRange \WriteStdout(ok)\else \WriteStdout(out)\fi
+\end
+```
+
+実行結果は以下のようになる.
+
+```txt
+$ luatex --halt-on-error ex10.tex 
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./ex10.tex (./stdio.tex)
+ok
+out
+)
+warning  (pdf backend): no pages of output.
+Transcript written on ex10.log.
+
+```
+
+上記の実行結果より, 正常に条件分岐が行えていることが分かる.
 
 [^1]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
 [^2]: TeX で `1+2` とすると `1`, `+`, `2` というトークン列に分解される.
