@@ -6,7 +6,7 @@ summary: TeX 入門してみた話.
 ---
 
 > [!NOTE]
-> 本記事は, 「苦しみのTeX言語プログラミング」の内容を演習的に行ったものです. 同書が気になる方は[BOOTH](https://booth.pm/ja/items/5799095)または[技術書典](https://techbookfest.org/product/8f7TevDUk3TfHMmQPhw61x?productVariantID=qeY5N5fALcsRrm18GD1LZ9)よりご購入下さい.
+> 本記事は, [いもあらい。](https://www.yamaimo.dev/)さん[^1]の「苦しみのTeX言語プログラミング」の内容を演習的に行ったものです. 同書が気になる方は[BOOTH](https://booth.pm/ja/items/5799095)または[技術書典](https://techbookfest.org/product/8f7TevDUk3TfHMmQPhw61x?productVariantID=qeY5N5fALcsRrm18GD1LZ9)よりご購入下さい.
 
 ## TeX
 
@@ -39,7 +39,7 @@ Hello, TeX! をするには以下のように記述する.
 \end
 ```
 
-続いて, 以下のように実行する[^1]. なお, 本記事では LuaTeX を使用する.  
+続いて, 以下のように実行する[^2]. なお, 本記事では LuaTeX を使用する.  
 
 ```txt
 $ luatex --halt-on-error hello.tex 
@@ -124,7 +124,7 @@ TeX の処理系は以下の4つのプロセッサから構成されている.
 
 #### 整数変数
 
-整数変数は `\newcount` で定義する[^2].
+整数変数は `\newcount` で定義する[^3].
 
 ```tex:ex01.tex
 \input{stdio}
@@ -222,7 +222,7 @@ Transcript written on ex03.log.
 
 ```
 
-上記の実行結果より, まず, `\One` が展開され[^3], その後, 整数リテラルと繋がっていることが分かる.
+上記の実行結果より, まず, `\One` が展開され[^4], その後, 整数リテラルと繋がっていることが分かる.
 
 これを防ぐには, 空白の文字トークンや `\relax` を入れる.
 
@@ -261,7 +261,7 @@ Transcript written on ex04.log.
 
 #### 整数演算
 
-整数演算では, 加算を `\advance`[^4], 乗算を `\multiply`, 除算を `\divide` で行える. 
+整数演算では, 加算を `\advance`[^5], 乗算を `\multiply`, 除算を `\divide` で行える. 
 
 ```tex:ex05.tex
 \input{stdio}
@@ -476,7 +476,8 @@ Transcript written on ex10.log.
 
 上記の実行結果より, 正常に条件分岐が行えていることが分かる.
 
-[^1]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
-[^2]: TeX で `1+2` とすると `1`, `+`, `2` というトークン列に分解される.
-[^3]: 整数リテラルとして扱えるトークンがある可能性があるため.
-[^4]: 減算は負数を加算することで実現する.
+[^1]: 「いもあらい。」はサークル名.
+[^2]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
+[^3]: TeX で `1+2` とすると `1`, `+`, `2` というトークン列に分解される.
+[^4]: 整数リテラルとして扱えるトークンがある可能性があるため.
+[^5]: 減算は負数を加算することで実現する.
