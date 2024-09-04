@@ -333,7 +333,7 @@ Transcript written on ex06.log.
 
 #### 整数比較
 
-整数比較は `\ifnum` で行う.
+整数の比較は `\ifnum` で行う.
 
 ```tex:ex07.tex
 \input{stdio}
@@ -364,6 +364,41 @@ Transcript written on ex07.log.
 ```
 
 上記の実行結果より, `\Mynum` は0より大きく, 1と等しいため `Plus` と `Ok` が展開され出力されていることが分かる. また, `\Mynun` は 2より小さいため, `Over` は展開されず出力されていないことも分かる.
+
+#### トークン比較
+
+トークンの比較をする制御トークンには `\if` や `\ifx` がある. `\if` は展開後のトークンを比較し, `\ifx` はトークンの定義を比較する (展開しない).
+
+```tex:ex08.tex
+\input{stdio}
+
+\def \MacroOne{a}
+\def \MacroTwo{a}
+
+\if a\MacroOne \WriteStdout(same)\else \WriteStdout(not same)\fi
+\ifx a\MacroOne \WriteStdout(same)\else \WriteStdout(not same)\fi
+\ifx \MacroOne\MacroTwo \WriteStdout(same)\else \WriteStdout(not same)\fi
+\end
+```
+
+実行結果は以下のようになる.
+
+```txt
+$ luatex --halt-on-error ex08.tex
+This is LuaTeX, Version 1.15.0 (TeX Live 2022) 
+ restricted system commands enabled.
+(./ex08.tex (./stdio.tex)
+same
+not same
+same
+)
+warning  (pdf backend): no pages of output.
+Transcript written on ex08.log.
+
+```
+
+上記の実行結果より, `a\MacroOne` は `aa` に展開されるため, `same` が出力されていることが分かる. 
+また, `a\MacroOne` は (展開なしでは) 定義が一致しないため `not same` が出力され, `\MacroOne\MacroTwo` は定義が一致するため `same` が出力されていることが分かる.
 
 [^1]: `--halt-on-error` オプションは, エラー発生時に処理系の実行を終了させるために指定している.
 [^2]: TeX で `1+2` とすると `1`, `+`, `2` というトークン列に分解される.
