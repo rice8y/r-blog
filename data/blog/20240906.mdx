@@ -118,13 +118,13 @@ Nmap done: 1 IP address (1 host up) scanned in 107.72 seconds
 
 ```
 
-上記の実行結果より, 22番ポートと80番ポートの**2つ**のポート開いていることが分かる.
+上記の実行結果より, 22番ポートと80番ポートの2つのポート開いていることが分かる.
 
 #### Task 2
 
 **What is the name of the JavaScript file loaded by the /invite page that has to do with invite codes?**
 
-Task 1 の結果より, バーチャルホストの設定がされているようなので, `~/etc/hosts` に `2million.htb` を追記して `http://2million.htb/` にアクセスする. 
+Task 1 の結果より, バーチャルホストの設定がされているようなので, `/etc/hosts` に `2million.htb` を追記して `http://2million.htb/` にアクセスする. 
 
 ```shell
 ┌──(kali㉿kali)-[~]
@@ -287,7 +287,7 @@ eval(function(p, a, c, k, e, d) {
 }('1 i(4){h 8={"4":4};$.9({a:"7",5:"6",g:8,b:\'/d/e/n\',c:1(0){3.2(0)},f:1(0){3.2(0)}})}1 j(){$.9({a:"7",5:"6",b:\'/d/e/k/l/m\',c:1(0){3.2(0)},f:1(0){3.2(0)}})}', 24, 24, 'response|function|log|console|code|dataType|json|POST|formData|ajax|type|url|success|api/v1|invite|error|data|var|verifyInviteCode|makeInviteCode|how|to|generate|verify'.split('|'), 0, {}))
 ```
 
-どうやら `eval` 関数で圧縮されているようである. そのため, [de4js](https://de4js.kshift.me/) で解凍する.
+`eval` 関数で圧縮されているようであるため, [de4js](https://de4js.kshift.me/) で解凍する.
 
 ```js:inviteapi.min.js
 function verifyInviteCode(code) {
@@ -322,3 +322,92 @@ function makeInviteCode() {
     })
 }
 ```
+
+`inviteapi.min.js` には `verifyInviteCode` と `makeInviteCode` の2つの関数が定義されている. 
+`verifyInviteCode` は, `/api/v1/invite/verify` に POST リクエストを送信し, 招待コードの有効性を検証する関数のようである. 
+`makeInviteCode` は, 招待コードを生成するための POST リクエストを送信する関数のようである. 
+そして, 招待コードを生成するエンドポイントには `/api/v1/invite/how/to/generate` が指定されている.
+
+実際に, `/api/v1/invite/how/to/generate` に POST リクエストを送信してみる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ curl -sX POST http://2million.htb/api/v1/invite/how/to/generate | jq
+{
+  "0": 200,
+  "success": 1,
+  "data": {
+    "data": "Va beqre gb trarengr gur vaivgr pbqr, znxr n CBFG erdhrfg gb /ncv/i1/vaivgr/trarengr",
+    "enctype": "ROT13"
+  },
+  "hint": "Data is encrypted ... We should probbably check the encryption type in order to decrypt it..."
+}
+
+```
+
+`makeInviteCode` が招待コードを生成するためのヒントを示してくれる関数であることが分かる.
+
+#### Task 4
+
+**The endpoint in makeInviteCode returns encrypted data. That message provides another endpoint to query. That endpoint returns a code value that is encoded with what very common binary to text encoding format. What is the name of that encoding?**
+
+Task 4 で得られた結果 (レスポンス) を見てみると, ROT13 でデータが暗号化されているため, 復号してみる. 
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ echo "Va beqre gb trarengr gur vaivgr pbqr, znxr n CBFG erdhrfg gb /ncv/i1/vaivgr/trarengr" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+In order to generate the invite code, make a POST request to /api/v1/invite/generate
+
+```
+
+復号データによると, 招待コードを生成するためには `/api/v1/invite/generate` に POST リクエストを送信する必要がある. 
+このことを踏まえて, `/api/v1/invite/generate` に POST リクエストを送信してみる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ curl -sX POST http://2million.htb/api/v1/invite/generate | jq
+{
+  "0": 200,
+  "success": 1,
+  "data": {
+    "code": "MUFNSlktUjI3SDUtNEEzWFMtTTFLN0s=",
+    "format": "encoded"
+  }
+}
+
+```
+
+上記の実行結果より, エンコードされた招待コード `MUFNSlktUjI3SDUtNEEzWFMtTTFLN0s=` が得られた. これを Base64 でデコードする.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ echo "MUFNSlktUjI3SDUtNEEzWFMtTTFLN0s=" | base64 --decode
+1AMJY-R27H5-4A3XS-M1K7K
+```
+
+これにより, 招待コード `1AMJY-R27H5-4A3XS-M1K7K` が得られた.
+
+#### Task 5
+
+**What is the path to the endpoint the page uses when a user clicks on "Connection Pack"?**
+
+Task 5 で得られた招待コードを使ってアカウントを登録してみる.
+
+まず, `/invite` で招待コード `1AMJY-R27H5-4A3XS-M1K7K` を入力し, `Sign Up` をクリックする.
+
+![2m03](/static/images/htb/2m03.png)
+
+![2m04](/static/images/htb/2m04.png)
+
+`Sign Up` により, `/register` にリダイレクトした. 各項目を入力し, `Register` をクリックする.
+
+![2m05](/static/images/htb/2m05.png)
+
+`Register` により, `/login` にリダイレクトした. 各項目を入力し, `Login` をクリックする.
+
+![2m06](/static/images/htb/2m06.png)
+
+`Login` により, `/home` にリダイレクトした. `.ovpn` を入手するために, `Access` をクリックする.
+
+![2m07](/static/images/htb/2m07.png)
+
