@@ -77,3 +77,248 @@ alias ls='ls --color=auto'
 ┌──(kali㉿kali)-[~]
 └─$ htb
 ```
+
+### 実践
+
+Active Machines の Walkthroughs は Hack The Box の規約により公開が禁止されているため, 本記事では Retired Machines を攻略する.
+
+#### マシン情報
+
+今回プレイするマシンは TwoMillion.
+
+![TwoMillion](/static/images/htb/TwoMillion.png)
+
+なお, 今回は Hack The Box 初回ということで, Guided Mode でプレイする.
+
+#### Task 1
+
+**How many TCP ports are open?**
+
+まず, Nmap でポートスキャンをする.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ nmap -Pn -p- --min-rate 2000 -sC -sV 10.10.11.221 -oN nmap-scan.log
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-07 00:17 JST
+Warning: 10.10.11.221 giving up on port because retransmission cap hit (10).
+Nmap scan report for 10.10.11.221
+Host is up (0.26s latency).
+Not shown: 63146 closed tcp ports (conn-refused), 2387 filtered tcp ports (no-response)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.1 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey:
+|   256 3e:ea:45:4b:c5:d1:6d:6f:e2:d4:d1:3b:0a:3d:a9:4f (ECDSA)
+|_  256 64:cc:75:de:4a:e6:a5:b4:73:eb:3f:1b:cf:b4:e3:94 (ED25519)
+80/tcp open  http    nginx
+|_http-title: Did not follow redirect to http://2million.htb/
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 107.72 seconds
+
+```
+
+上記の実行結果より, 22番ポートと80番ポートの**2つ**のポート開いていることが分かる.
+
+#### Task 2
+
+**What is the name of the JavaScript file loaded by the /invite page that has to do with invite codes?**
+
+Task 1 の結果より, バーチャルホストの設定がされているようなので, `~/etc/hosts` に `2million.htb` を追記して `http://2million.htb/` にアクセスする. 
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ echo -e '10.10.11.221\t\t2million.htb' | sudo tee -a /etc/hosts
+10.10.11.221            2million.htb
+
+```
+
+実際にアクセスしてみる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ xdg-open 'http://2million.htb/'
+```
+
+![2m01](/static/images/htb/2m01.png)
+
+`/invite` にアクセスしてみる.
+
+![2m02](/static/images/htb/2m02.png)
+
+ここで, `/invite` の HTML コードを取得してみる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ curl http://2million.htb/invite
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An online platform to test and advance your skills in penetration testing and cyber security. Join today and start training in our online labs." />
+    <meta name="keywords" content="penetration testing, pen testing, penetration testing labs, pen testing labs, penetration testing training">
+    <meta name="author" content="Hack The Box">
+
+    <title>Hack The Box :: Penetration Testing Labs</title>
+    <link rel="canonical" href="https://www.hackthebox.eu" />
+    <link rel="icon" href="/images/favicon.png">
+    <!-- Core CSS -->
+    <link href="/css/htb-frontend.css" rel="stylesheet">
+</head>
+<body class="blank" style="overflow-y:hidden; ">
+    <!-- Wrapper-->
+    <div class="wrapper">
+
+            <!-- Main content-->
+            <section class="content" style="margin:0px; padding:0px;">
+                <div class="container-center centerbox">
+
+
+            <div class="view-header">
+                <div class="header-icon">
+                    <i class="pe page-header-icon pe-7s-smile"></i>
+                </div>
+                <div class="header-title">
+                    <h3>Hi!</h3>
+                    <small>
+                        Feel free to hack your way in :)                    </small>
+                </div>
+            </div>
+
+            <div class="panel panel-filled">
+                <div class="panel-body">
+                    <form id="verifyForm"  method="post">
+                        <div class="form-group ">
+                            <label class="control-label" for="code">Invite Code</label>
+                            <input type="text" title="Please enter your invite code" required="" value="" name="code" id="code" class="form-control">
+                            <span class="help-block small"></span>
+                        </div>
+                        <div>
+                            <button class="btn btn-accent">Sign Up</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <span class="help-block small text-center">If you are already a member click  <a href="/login">here</a> to login.</span>
+        </div>
+        <div class="particles_full" id="particles-js"></div>
+        </section>
+        <!-- End main content-->
+
+    </div>
+    <!-- End wrapper-->
+
+    <!-- scripts -->
+    <script src="/js/htb-frontend.min.js"></script>
+    <script defer src="/js/inviteapi.min.js"></script>
+    <script defer>
+        $(document).ready(function() {
+            $('#verifyForm').submit(function(e) {
+                e.preventDefault();
+
+                var code = $('#code').val();
+                var formData = { "code": code };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    data: formData,
+                    url: '/api/v1/invite/verify',
+                    success: function(response) {
+                        if (response[0] === 200 && response.success === 1 && response.data.message === "Invite code is valid!") {
+                            // Store the invite code in localStorage
+                            localStorage.setItem('inviteCode', code);
+
+                            window.location.href = '/register';
+                        } else {
+                            alert("Invalid invite code. Please try again.");
+                        }
+                    },
+                    error: function(response) {
+                        alert("An error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+どうやら, ユーザがフォームに入力した招待コードをサーバに送信し, その有効性を検証し, 有効であれば招待コードをローカルストレージに保存し, ユーザを登録ページにリダイレクトするようである. 
+そして, 招待コードの検証や処理に関するファイルは `inviteapi.min.js` と推測される. 
+
+#### Task 3
+
+**What JavaScript function on the invite page returns the first hint about how to get an invite code? Don't include () in the answer.**
+
+ブラウザの開発者ツールで `inviteapi.min.js` のコードを見てみる.
+
+```js:inviteapi.min.js
+eval(function(p, a, c, k, e, d) {
+    e = function(c) {
+        return c.toString(36)
+    }
+    ;
+    if (!''.replace(/^/, String)) {
+        while (c--) {
+            d[c.toString(a)] = k[c] || c.toString(a)
+        }
+        k = [function(e) {
+            return d[e]
+        }
+        ];
+        e = function() {
+            return '\\w+'
+        }
+        ;
+        c = 1
+    }
+    ;while (c--) {
+        if (k[c]) {
+            p = p.replace(new RegExp('\\b' + e(c) + '\\b','g'), k[c])
+        }
+    }
+    return p
+}('1 i(4){h 8={"4":4};$.9({a:"7",5:"6",g:8,b:\'/d/e/n\',c:1(0){3.2(0)},f:1(0){3.2(0)}})}1 j(){$.9({a:"7",5:"6",b:\'/d/e/k/l/m\',c:1(0){3.2(0)},f:1(0){3.2(0)}})}', 24, 24, 'response|function|log|console|code|dataType|json|POST|formData|ajax|type|url|success|api/v1|invite|error|data|var|verifyInviteCode|makeInviteCode|how|to|generate|verify'.split('|'), 0, {}))
+```
+
+どうやら `eval` 関数で圧縮されているようである. そのため, [de4js](https://de4js.kshift.me/) で解凍する.
+
+```js:inviteapi.min.js
+function verifyInviteCode(code) {
+    var formData = {
+        "code": code
+    };
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        data: formData,
+        url: '/api/v1/invite/verify',
+        success: function(response) {
+            console.log(response)
+        },
+        error: function(response) {
+            console.log(response)
+        }
+    })
+}
+
+function makeInviteCode() {
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: '/api/v1/invite/how/to/generate',
+        success: function(response) {
+            console.log(response)
+        },
+        error: function(response) {
+            console.log(response)
+        }
+    })
+}
+```
