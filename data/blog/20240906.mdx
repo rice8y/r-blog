@@ -567,7 +567,13 @@ Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
 
 ```
 
-上記の実行結果より, API で利用可能なエンドポイントのリストが確認できる. ここで, `/api/v1/admin/auth` にリクエストを送信して, 自分が管理者権限を持っているかを確認してみる.
+上記の実行結果より, API で利用可能なエンドポイントのリストが確認できる. 
+
+#### Task 7
+
+**What API endpoint can change a user account to an admin account?**
+
+`/api/v1/admin/auth` にリクエストを送信して, 自分が管理者権限を持っているかを確認してみる.
 
 ```shell
 ┌──(kali㉿kali)-[~]
@@ -824,3 +830,41 @@ Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
 }
 
 ```
+
+上記の実行結果より, 管理者権限を取得できた様な気がするので, `/api/v1/admin/auth` へリクエストを送信して確認してみる.
+
+```shell
+┌──(rice8㉿DESKTOP-KKT3IC5)-[~]
+└─$ curl -sv 2million.htb/api/v1/admin/auth --cookie "PHPSESSID=7ao7isbtl7rr623elri1chnbf0" | jq
+* Host 2million.htb:80 was resolved.
+* IPv6: (none)
+* IPv4: 10.10.11.221
+*   Trying 10.10.11.221:80...
+* Connected to 2million.htb (10.10.11.221) port 80
+> GET /api/v1/admin/auth HTTP/1.1
+> Host: 2million.htb
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
+>
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Fri, 06 Sep 2024 19:23:13 GMT
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Connection: keep-alive
+< Expires: Thu, 19 Nov 1981 08:52:00 GMT
+< Cache-Control: no-store, no-cache, must-revalidate
+< Pragma: no-cache
+<
+{ [27 bytes data]
+* Connection #0 to host 2million.htb left intact
+{
+  "message": true
+}
+
+```
+
+上記の実行結果より, `message` が `true` になり, 無事に管理者権限を取得できたことが分かる.
+
