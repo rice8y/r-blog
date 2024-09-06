@@ -1,0 +1,67 @@
+---
+title: Hack The Box
+date: '2024-09-06'
+tags: ['Hack The Box']
+summary: Hack The Box
+---
+
+## Hack The Box
+
+### アカウント登録
+
+### Kali Linux
+
+### OpenVPN クライアントの設定
+
+まず, Hack The Box のダッシュボードの `CONNECT TO HTB > Starting Point > OpenVPN` からファイルをダウンロードする (以降, このファイルを `<your_username.ovpn>` とする). 
+次に, 以下を実行する.
+
+<details>
+<summary>OpenVPN のインストール</summary>
+
+```shell
+$ sudo apt-get install openvpn
+```
+</details>
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ sudo openvpn <your_username>.ovpn
+```
+
+### Aliases の設定
+
+毎回, `sudo openvpn <your_username>.ovpn` を実行するのは面倒なのでエイリアスを設定する.
+
+`$HOME/.zshrc` を編集し, 末尾にエイリアスを追加する. ただし, `$HOME/vpn` に `<your_username>.ovpn` が配置されていることを前提とする.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ nano $HOME/.zshrc
+```
+
+```shell
+# alias
+alias htb='sudo openvpn $HOME/vpn/<your_username>.ovpn'
+alias mapshare='sudo $HOME/mapshare/mount-shared-folders.sh'
+```
+
+`source` でファイルを再読み込みして設定を反映させる. 
+なお, 私の環境ではデフォルトで Bash が動作しているため, `zsh` で シェルを Zsh に変更してからファイルを再読み込みする.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ zsh
+┌──(kali㉿kali)-[~]
+└─$ source $HOME/.zshrc
+
+┌──(kali㉿kali)-[~]
+└─$ exit
+```
+
+これにより, 以下のように `htb` を実行するだけで Hack The Box のネットワークへ接続することができる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ htb
+```
