@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
 
 interface PDFViewerProps {
@@ -27,13 +25,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfSrc }) => {
       PDF Download
     </a>
   ) : (
-    <iframe
-      width="100%"
-      height="400px"
-      src={pdfSrc}
-      title="PDF Viewer"
-      style={{ border: 'none' }}
-    />
+    <iframe width="100%" height="400px" src={pdfSrc} title="PDF Viewer" />
   )
 }
 
