@@ -222,4 +222,18 @@ Beamer とは, LaTeX でプレゼンテーションを作成するためのパ�
 \end{document}
 ```
 
-<iframe src="/static/pdf/latex/slide.pdf" width="100%" height="600px" scrolling="yes"></iframe>
+<div
+  style={{
+    width: '100%',
+    overflow: 'auto',
+    WebkitOverflowScrolling: 'touch', // Webkit専用プロパティ
+  }}
+>
+  <iframe
+    style={{
+      width: '100%',
+      height: '600px', // 適切な高さを指定してください
+    }}
+    src="/static/pdf/latex/slide.pdf" // 適切なURLを指定してください
+  />
+</div>
