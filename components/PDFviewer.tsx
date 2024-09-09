@@ -23,6 +23,7 @@ const PDFviewer = ({ pdfSrc }) => {
       width="100%"
       height="400px"
       src={pdfSrc}
+      title="PDF Viewer"
     />
   )
 }
