@@ -1,0 +1,225 @@
+---
+title: LaTeX でプレゼンテーション作成
+date: '2024-09-10'
+tags: ['LaTeX', 'Beamer']
+summary: LaTeX でプレゼンテーションを作成してみた話.
+---
+
+## Beamer
+
+Beamer とは, LaTeX でプレゼンテーションを作成するためのパッケージである. 
+本記事では, 基本的な使い方しか扱わないため, 詳細に関しては以下を参照されたい.
+
+- [latex-beamer.com](https://latex-beamer.com/)
+- [Beamer Documentation](https://ftp.kddilabs.jp/CTAN/macros/latex/contrib/beamer/doc/beameruserguide.pdf)
+- [Beamer (Overleaf Documentation)](https://www.overleaf.com/learn/latex/Beamer)
+
+## 使い方
+
+## 使用例
+
+```latex:slide.tex
+\documentclass[12pt, unicode]{beamer}
+\usetheme{Madrid}
+\usepackage{luatexja}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{url}
+\newcommand{\mytoday}{\the\year/\the\month/\the\day}
+\newcommand{\bhline}[1]{\noalign{\hrule height #1}}
+
+\title{Beamer 入門}
+\author{Eito YONEYAMA}
+\date{\mytoday}
+\institute[某大学]{某大学 情報系}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{目次}
+  \tableofcontents
+\end{frame}
+
+\section{Beamer とは}
+\begin{frame}{Beamer とは}
+  Beamer とは, LaTeX でプレゼンテーションを作成するためのパッケージである. 
+  \newline
+  \newline
+  \textbf{関連リンク}
+  \begin{itemize}
+    \item \url{https://latex-beamer.com/}
+    \item \url{https://ftp.kddilabs.jp/CTAN/macros/latex/contrib/beamer/doc/beameruserguide.pdf}
+    \item \url{https://www.overleaf.com/learn/latex/Beamer}
+  \end{itemize}
+\end{frame}
+
+\section{Beamer の使い方}
+\begin{frame}{Beamer の使い方}
+  本スライドでは, Beamer の基本的な使い方を, 記述例と出力例とともに紹介する. 今回扱う内容は以下の通り.
+  \newline
+  \begin{itemize}
+    \item 箇条書き
+    \item 数式
+    \item 表
+    \item 図
+    \item アニメーション
+  \end{itemize}
+\end{frame}
+
+\subsection{箇条書き}
+\begin{frame}[fragile]{箇条書き 1/2}
+  \begin{block}{Code}
+    \begin{semiverbatim}
+  \\begin\{itemize\}
+    \\item Item 1
+    \\item Item 2
+    \\item Item 3
+  \\end\{itemize\}
+\end{semiverbatim}
+  \end{block}
+  \begin{block}{Output}
+    \begin{itemize}
+      \item Item 1
+      \item Item 2
+      \item Item 3
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{箇条書き 2/2}
+  \begin{block}{Code}
+    \begin{semiverbatim}
+  \\begin\{enumerate\}[1.]
+    \\item Item 1
+    \\itme Item 2
+    \\item Item 3
+  \\end\{enumerate\}
+\end{semiverbatim}
+  \end{block}
+  \begin{block}{Output}
+    \begin{enumerate}[1.]
+      \item Item 1
+      \item Item 2
+      \item Item 3
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\subsection{数式}
+\begin{frame}[fragile]{数式 1/2}
+  \begin{block}{Code}
+    \begin{semiverbatim}
+  \\begin\{equation\}
+    \\dfrac\{\\partial u\}\{\\partial t\} 
+    + u \\dfrac\{\\partial u\}\{\\partial x\} 
+    = \\nu \\dfrac\{\\partial\^\{2\} u\}\{\\partial x\^\{2\}\}
+  \\end\{equation\}
+\end{semiverbatim}
+  \end{block}
+  \begin{block}{Output}
+    \begin{equation}
+      \dfrac{\partial u}{\partial t} + u \dfrac{\partial u}{\partial x} = \nu \dfrac{\partial^{2} u}{\partial x^{2}}
+    \end{equation}
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{数式 2/2}
+  \begin{block}{Code}
+    \begin{semiverbatim}
+  \\begin\{align*\}
+    \&\\dfrac\{dx\}\{dt\}=ax-bxy\\\\
+    \&\\dfrac\{dy\}\{dt\}=-cy+\\mu bxy
+  \\end\{align*\}
+\end{semiverbatim}
+  \end{block}
+  \begin{block}{Output}
+    \begin{align*}
+      &\dfrac{dx}{dt}=ax-bxy\\
+      &\dfrac{dy}{dt}=-cy+\mu bxy
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\subsection{表}
+\begin{frame}[fragile]{表 1/2}
+  \begin{block}{Code}
+\begin{semiverbatim}
+  \\begin\{table\}[H]
+    \\centering
+    \\caption\{First table\}
+    \\begin\{tabular\}\{clr\}\\bhline\{1pt\}
+      Centered\&Left-aligned\&Right-aligned\\\\\\hline
+      A\&B\&C\\\\
+      D\&E\&F\\\\\\bhline\{1pt\}
+    \\end\{tabular\}
+  \\end\{table\}
+\end{semiverbatim}
+  \end{block}
+※\verb|\newcommand{\bhline}[1]{\noalign{\hrule height #1}}|
+\end{frame}
+
+\begin{frame}{表 2/2}
+  \begin{block}{Output}
+    \begin{table}[H]
+      \centering
+      \caption{First table}
+      \begin{tabular}{clr}\bhline{1pt}
+        Centered&Left-aligned&Right-aligned\\\hline
+        A&B&C\\
+        D&E&F\\\bhline{1pt}
+      \end{tabular}
+    \end{table}
+  \end{block}
+\end{frame}
+
+\subsection{図}
+\begin{frame}[fragile]{図 1/2}
+  \begin{block}{Code}
+\begin{semiverbatim}
+  \\begin\{figure\}[H]
+    \\centering
+    \\includegraphics[width=0.4\\linewidth]\{santa.png\}
+    \\caption\{素敵な雪だるま\}
+  \\end\{figure\}
+\end{semiverbatim}
+  \end{block}
+\end{frame}
+
+\begin{frame}{図 2/2}
+  \begin{block}{Output}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=0.4\linewidth]{santa.png}
+      \caption{素敵な雪だるま}
+    \end{figure}
+  \end{block}
+\end{frame}
+
+\subsection{アニメーション}
+\begin{frame}[fragile]{アニメーション 1/2}
+  \begin{block}{Code}
+\begin{semiverbatim}
+  \\begin\{itemize\}
+    \\item<1-> One
+    \\item<2-> Two 
+    \\item<3-> Three 
+  \\end\{itemize\}      
+\end{semiverbatim}
+  \end{block}
+\end{frame}
+
+\begin{frame}{アニメーション 2/2}
+  \begin{block}{Output}
+    \begin{itemize}
+      \item<1-> One
+      \item<2-> Two 
+      \item<3-> Three 
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\end{document}
+```
+
+<embed src="/static/pdf/latex/slide.pdf" width="100%" height="600px" type="application/pdf">
