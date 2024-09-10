@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 
 interface PDFViewerProps {
   pdfSrc: string
+  height?: string
+  width?: string
 }
 
-const PDFViewer: React.FC<PDFViewerProps> = ({ pdfSrc }) => {
+const PDFViewer: React.FC<PDFViewerProps> = ({ pdfSrc, height = '400px', width = '100%' }) => {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -12,6 +14,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfSrc }) => {
       setIsMobile(window.innerWidth <= 768)
     }
 
+    // Run the resize handler initially to set the correct state
     handleResize()
 
     window.addEventListener('resize', handleResize)
@@ -25,7 +28,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfSrc }) => {
       PDF Download
     </a>
   ) : (
-    <iframe width="100%" height="400px" src={pdfSrc} title="PDF Viewer" />
+    <iframe width={width} height={height} src={pdfSrc} title="PDF Viewer" />
   )
 }
 
