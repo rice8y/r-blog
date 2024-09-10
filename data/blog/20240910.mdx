@@ -17,6 +17,23 @@ Beamer とは, LaTeX でプレゼンテーションを作成するためのパ�
 
 ## 使い方
 
+### frame 環境
+
+Beamer では, スライド内容を frame 環境内に記述する. 
+
+```latex
+\begin{frame}[options]{Frame Title}{Frame subtitle}
+  content
+\end{frame}
+
+% 以下でも同様.
+\begin{frame}
+  \frametitle{Frame Title}
+  \framesubttle{Frame subtitle}
+  content
+\end{frame}
+```
+
 ## 使用例
 
 ```latex:slide.tex
