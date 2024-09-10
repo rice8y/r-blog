@@ -19,7 +19,7 @@ Beamer とは, LaTeX でプレゼンテーションを作成するためのパ�
 
 ### frame 環境
 
-Beamer では, スライド内容を frame 環境内に記述する. 
+Beamer では, スライド内容を `frame` 環境内に記述する. 
 
 ```latex
 \begin{frame}[options]{Frame Title}{Frame subtitle}
@@ -42,6 +42,29 @@ Beamer では, スライド内容を frame 環境内に記述する.
 % 以下と同様.
 \begin{frame}
   \titlepage
+\end{frame}
+```
+
+### 箇条書き
+
+箇条書きには, `itemize` 環境や `enumerate` 環境を用いる.
+
+```latex
+\begin{frame}
+  \begin{itemize}
+    \item Item 1
+    \item Item 2
+    \item Item 3
+  \end{itemize}
+\end{frame}
+
+% enumerate 環境によるカウンタの使用例
+\begin{frame}
+  \begin{enumerate}[1.]
+    \item Item 1
+    \item Item 2
+    \item Item 3
+  \end{enumerate}
 \end{frame}
 ```
 
