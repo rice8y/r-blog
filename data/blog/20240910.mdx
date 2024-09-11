@@ -45,6 +45,18 @@ Beamer では, スライド内容を `frame` 環境内に記述する.
 \end{frame}
 ```
 
+### block 環境
+
+block 環境内に記述した内容は Beamer のテーマに合わせた箱で装飾される.
+
+```latex
+\begin{frame}
+  \begin{block}{Block title}
+    content
+  \end{block}
+\end{frame}
+```
+
 ### 箇条書き
 
 箇条書きには, `itemize` 環境や `enumerate` 環境を用いる.
@@ -65,6 +77,82 @@ Beamer では, スライド内容を `frame` 環境内に記述する.
     \item Item 2
     \item Item 3
   \end{enumerate}
+\end{frame}
+```
+
+### 数式
+
+数式には, `equation` 環境や `align` 環境等の数式環境を用いる.
+
+```latex
+\begin{frame}
+  \begin{equation}
+    \dfrac{\partial u}{\partial t} + u \dfrac{\partial u}{\partial x} = \nu \dfrac{\partial^{2} u}{\partial x^{2}}
+  \end{equation}
+\end{frame}
+```
+
+### 表
+
+表には, `table` 環境と `tabular` 環境を用いる.
+
+```latex
+\begin{frame}
+  \begin{table}[H]
+    \centering
+    \caption{First Table}
+    \begin{tabular}{ccc}\hline
+      A&B&C\\\hline
+      D&E&F\\\hline
+    \end{tabular}
+  \end{table}
+\end{frame}
+```
+
+### 図
+
+図には, `figure` 環境を用いる.
+
+```latex
+\begin{frame}
+  \centering
+  \includegraphics[width=0.4\linewidth]{sample.png}
+  \caption{First Figure}
+\end{frame}
+```
+
+### アニメーション
+
+Beamer でアニメーションを実現するには, `\pause` や `\uncover`, `<>` 等を用いる.
+
+```latex
+\begin{frame}
+  \begin{block}{First Block}
+    content
+  \end{block}
+  \pause
+  \begin{block}{Second Block}
+    content
+  \end{block}
+  \pause
+  \begin{block}{Three Block}
+    content
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}
+    \begin{itemize}
+      \item<1-> One
+      \item<2-> Two
+    \end{itemize}
+  \end{block}
+  \uncover<3>{
+    Three
+  }
+  \uncover<4>{
+    Four
+  }
 \end{frame}
 ```
 
