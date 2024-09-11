@@ -145,15 +145,17 @@ Beamer でアニメーションを実現するには, `\pause` や `\uncover`, `
 
 アニメーションの遷移は, 
 
-➀ First Block
-➁ First Block + Second Block
+➀ First Block  
+➁ First Block + Second Block  
 ➂ First Block + Second Block + Third Block
 
 としたとき, ➀$\rightarrow$➁$\rightarrow$➂となる.
 
+#### `\uncover`, `<>`
+
 ```latex
 \begin{frame}
-  \begin{block}
+  \begin{block}{}
     \begin{itemize}
       \item<1-> One
       \item<2-> Two
@@ -167,6 +169,15 @@ Beamer でアニメーションを実現するには, `\pause` や `\uncover`, `
   }
 \end{frame}
 ```
+
+アニメーションの遷移は, 
+
+➀ One  
+➁ One + Two  
+➂ One + Two + Three  
+➃ One + Two + Four 
+
+としたとき, ➀$\rightarrow$➁$\rightarrow$➂$\rightarrow$➃となる.
 
 ## 使用例
 
