@@ -123,7 +123,9 @@ block 環境内に記述した内容は Beamer のテーマに合わせた箱で
 
 ### アニメーション
 
-Beamer でアニメーションを実現するには, `\pause` や `\uncover`, `<>` 等を用いる.
+Beamer でアニメーションを実現するには, `\pause` や `\uncover`, `<>` 等を用いる. 
+
+#### `\pause`
 
 ```latex
 \begin{frame}
@@ -135,11 +137,21 @@ Beamer でアニメーションを実現するには, `\pause` や `\uncover`, `
     content
   \end{block}
   \pause
-  \begin{block}{Three Block}
+  \begin{block}{Third Block}
     content
   \end{block}
 \end{frame}
+```
 
+アニメーションの遷移は, 
+
+➀ First Block
+➁ First Block + Second Block
+➂ First Block + Second Block + Third Block
+
+としたとき, ➀$\rightarrow$➁$\rightarrow$➂となる.
+
+```latex
 \begin{frame}
   \begin{block}
     \begin{itemize}
