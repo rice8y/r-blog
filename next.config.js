@@ -25,7 +25,7 @@ const securityHeaders = [
   },
   {
     key: 'X-Content-Type-Options',
-    value: 'nosniff',
+    value: 'nosniff', // change 'deny' -> 'nosniff'
   },
   {
     key: 'X-DNS-Prefetch-Control',
