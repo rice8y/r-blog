@@ -10,13 +10,13 @@ const projectsData: Project[] = [
     title: 'Julia 忘備録',
     description: 'Julia の忘備録.',
     imgSrc: '/static/images/julia-m.png',
-    href: 'https://rice8y.github.io/Eypage/',
+    href: 'https://rice8y.github.io/julia-book/',
   },
   {
-    title: 'SQLite3 for PHP',
-    description: 'PHP による SQLite3 に関する忘備録.',
-    imgSrc: '/static/images/sqlite-m.png',
-    href: 'https://rice8y.github.io/sqlite3/',
+    title: 'Hello, World!',
+    description: 'とにかくHello, World!する話.',
+    imgSrc: '/static/images/hello-m.png',
+    href: 'https://rice8y.github.io/hello/',
   },
   {
     title: 'ごみカレンダー bot',
