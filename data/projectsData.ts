@@ -14,7 +14,7 @@ const projectsData: Project[] = [
   },
   {
     title: 'Hello, World!',
-    description: 'とにかくHello, World!する話.',
+    description: 'とにかく Hello, World! する話.',
     imgSrc: '/static/images/hello-m.png',
     href: 'https://rice8y.github.io/hello/',
   },
